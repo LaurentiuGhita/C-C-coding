@@ -1,9 +1,30 @@
-#include <stdio.h>
-#include <stdlib.h>
+#ifndef LIST_H
+#define LIST_H
 
-typedef struct list
+#include <iostream>
+
+struct Node
 {
-	int nVal;
-	struct list* pNext;
-}list;
+	Node(int m_nVal);
 
+	int m_nVal;
+	Node* pNext;
+};
+
+class List
+{
+public:
+	List() : headNode(NULL) {}
+	~List();
+
+	void Add(int nval);
+	void Print();
+	bool Search(int nVal);
+	bool Delete(int nVal);
+private:
+	
+	Node* headNode;
+
+};
+
+#endif
