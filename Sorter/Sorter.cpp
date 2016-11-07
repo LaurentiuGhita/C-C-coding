@@ -1,5 +1,5 @@
 #include "Sorter.h"
-#include "utils.h"
+#include "../Utils/utils.h"
 
 Sorter::Sorter(std::istream& in)
 {
