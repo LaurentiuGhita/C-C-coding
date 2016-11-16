@@ -1,13 +1,34 @@
-#include "BinarySearchTree.h"
+#ifndef BINARY_SEARCH_TREE_H
+#define BINARY_SEARCH_TREE_H
 
-BinarySearchTree::AddElement(Node*& rootNode, int nVal)
+#include <iostream>
+
+struct TreeNode
 {
-	TreeNode* newNode = TreeNode(nVal);
+	TreeNode(int nVal, TreeNode* pParent);
+	int m_nVal;
+	TreeNode* m_pRightChild;
+	TreeNode* m_pLeftChild;
+	TreeNode* m_pParent;
+};
 
-	if(m_pRoot == NULL)
-	{
-		m_pRoot = newNode;
-	}
+class BinarySearchTree
+{
+public:
+	BinarySearchTree() : m_pRoot(NULL) {};
+	void AddElement(int nVal);
+	bool SearchElement(int nVal);
+	bool DeleteElement(int nVal);
+	void PrintBinaryTree();
 
+private:
+	void AddElementHelper(int nVal, TreeNode*& pRoot);
+	TreeNode* SearchElementHelper(int nVal, const TreeNode* pRoot);
+	bool DeleteElementHelper(int nVal, TreeNode*& pRoot);
+	TreeNode* GetRightMostNode(TreeNode*& pRoot);
+	void PrintTree(TreeNode* pRoot);
 
-}
+	TreeNode* m_pRoot;
+};
+
+#endif
