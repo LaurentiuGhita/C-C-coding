@@ -2,14 +2,19 @@
 
 int main()
 {
-	int elemToDelete = 7;
+	int elemToDelete;
 
-	//std::cout << "Element to delete \n"; std::cin >> elemToDelete; 
+	std::cout << "Element to delete \n"; std::cin >> elemToDelete; 
 
 	BinarySearchTree binaryTree;
-	binaryTree.AddElement(7);
-	binaryTree.AddElement(3);
-	binaryTree.AddElement(8);
+	binaryTree.AddElement(50);
+	binaryTree.AddElement(49);
+	binaryTree.AddElement(20);
+	binaryTree.AddElement(6);
+	binaryTree.AddElement(25);
+	binaryTree.AddElement(21);
+	binaryTree.AddElement(27);
+	binaryTree.AddElement(26);
 	
 #if 0
 	binaryTree.AddElement(3);

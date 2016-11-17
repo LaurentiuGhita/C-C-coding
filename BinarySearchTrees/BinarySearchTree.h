@@ -26,7 +26,7 @@ private:
 	void AddElementHelper(int nVal, TreeNode*& pRoot);
 	TreeNode* SearchElementHelper(int nVal, const TreeNode* pRoot);
 	bool DeleteElementHelper(int nVal, TreeNode*& pRoot);
-	TreeNode* GetRightMostNode(TreeNode*& pRoot);
+	TreeNode* GetMaxFromLeftTree(TreeNode*& pRoot);
 	void PrintTree(TreeNode* pRoot);
 	void FreeTree(TreeNode* pRoot);
 

@@ -76,79 +76,62 @@ TreeNode* BinarySearchTree::SearchElementHelper(int nVal, const TreeNode* pRoot)
 bool BinarySearchTree::DeleteElementHelper(int nVal, TreeNode*& pRoot)
 {
 	TreeNode* nodeToReplace = SearchElementHelper(nVal, pRoot);
+
 	if(nodeToReplace == NULL)
+	{
+		std::cout << "Node " << nVal << " not found \n";
 		return false;
+	}
+
+	TreeNode* pMaxFromLeft = GetMaxFromLeftTree(nodeToReplace->m_pLeftChild);
+	
+	/* node to delete doesn't have a left child*/
+	if(pMaxFromLeft == NULL)
+	{
+		TreeNode* pRightChild = nodeToReplace->m_pRightChild;
+		TreeNode* pNodeToReplaceParent = nodeToReplace->m_pParent;
+		if(pRightChild)
+		{
+			pRightChild->m_pParent = nodeToReplace->m_pParent;
+			if(pNodeToReplaceParent)
+			{
+				if(pRightChild->m_nVal < pNodeToReplaceParent->m_nVal)
+					pNodeToReplaceParent->m_pLeftChild = pRightChild;
+				else
+					pNodeToReplaceParent->m_pRightChild = pRightChild;
+			}
+		}
+		else
+		{
+			if(nodeToReplace->m_nVal < pNodeToReplaceParent->m_nVal)
+				pNodeToReplaceParent->m_pLeftChild = NULL;
+			else
+				pNodeToReplaceParent->m_pRightChild = NULL;
+		}
+		delete nodeToReplace;
+	}
 	else
 	{
-		/* leaf node */
-		if(nodeToReplace->m_pLeftChild == NULL && nodeToReplace->m_pRightChild == NULL)
-		{
-			/* check if left of right child of parent*/
-			if(nodeToReplace->m_pParent)
-			{
-				// left child of parent
-				if(nodeToReplace->m_nVal < nodeToReplace->m_pParent->m_nVal)
-				{
-					nodeToReplace->m_pParent->m_pLeftChild = NULL;
-					
-				}
-				else
-				{
-					nodeToReplace->m_pParent->m_pRightChild = NULL;
-				}
-				delete nodeToReplace;
-			}
-		}
-		else
-		{
-			TreeNode* nodeToReplaceWith = GetRightMostNode(nodeToReplace->m_pLeftChild);
-			if(nodeToReplaceWith == NULL)
-			{
-				if(nodeToReplace->m_nVal < nodeToReplace->m_pParent->m_nVal)
-					nodeToReplace->m_pParent->m_pLeftChild = nodeToReplace->m_pLeftChild;
-				else
-					nodeToReplace->m_pParent->m_pRightChild = nodeToReplace->m_pLeftChild;
+		if(pMaxFromLeft->m_nVal < pMaxFromLeft->m_pParent->m_nVal)
+			pMaxFromLeft->m_pParent->m_pLeftChild = pMaxFromLeft->m_pLeftChild;
 
-				delete nodeToReplace;
-			}
-			else
-			{
-				nodeToReplaceWith->m_pRightChild 
-			}
+		if(pMaxFromLeft->m_pLeftChild)
+			pMaxFromLeft->m_pLeftChild->m_pParent = pMaxFromLeft->m_pParent;
 
-		}
+		nodeToReplace->m_nVal = pMaxFromLeft->m_nVal;
 
-
-
-		if(nodeToReplaceWith)
-		{
-			std::cout << nodeToReplace->m_nVal << " will be replaced with " << nodeToReplaceWith->m_nVal << "\n";
-		
-
-		}
-		else
-		{
-			if(nodeToReplace->m_pParent)
-			{
-				if(nodeToReplace->m_pParent->m_nVal > nodeToReplace->m_nVal)
-					nodeToReplace->m_pParent->m_pLeftChild = NULL;
-				else
-					nodeToReplace->m_pParent->m_pRightChild = NULL;
-			}
-			delete nodeToReplace;
-		}
+		delete pMaxFromLeft;
 	}
-	return true;
 }
 
-TreeNode* BinarySearchTree::GetRightMostNode(TreeNode*& pRoot)
+TreeNode* BinarySearchTree::GetMaxFromLeftTree(TreeNode*& pRoot)
 {
 	if(pRoot == NULL)
 		return NULL;
 
 	TreeNode* m_pRightChild = pRoot->m_pRightChild;
 	if(m_pRightChild)
-		GetRightMostNode(pRoot->m_pRightChild);
+		GetMaxFromLeftTree(pRoot->m_pRightChild);
 	else
 		return pRoot;
 }
