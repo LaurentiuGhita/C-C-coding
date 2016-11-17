@@ -6,6 +6,11 @@ TreeNode::TreeNode(int nVal, TreeNode* pParent) : m_nVal(nVal)
 	m_pParent = pParent;
 }
 
+BinarySearchTree::~BinarySearchTree()
+{
+	FreeTree(m_pRoot);
+}
+
 void BinarySearchTree::AddElement(int nVal)
 {
 	return AddElementHelper(nVal, m_pRoot);
@@ -70,32 +75,67 @@ TreeNode* BinarySearchTree::SearchElementHelper(int nVal, const TreeNode* pRoot)
 
 bool BinarySearchTree::DeleteElementHelper(int nVal, TreeNode*& pRoot)
 {
-	TreeNode* nodeToDelete = SearchElementHelper(nVal, pRoot);
-	if(nodeToDelete == NULL)
+	TreeNode* nodeToReplace = SearchElementHelper(nVal, pRoot);
+	if(nodeToReplace == NULL)
 		return false;
 	else
 	{
-		TreeNode* nodeToReplaceWith = GetRightMostNode(nodeToDelete->m_pLeftChild);
-		if(nodeToReplaceWith)
+		/* leaf node */
+		if(nodeToReplace->m_pLeftChild == NULL && nodeToReplace->m_pRightChild == NULL)
 		{
-			std::cout << nodeToDelete->m_nVal << " will be replaced with " << nodeToReplaceWith->m_nVal << "\n";
-			
-			/* switch values*/
-			nodeToDelete->m_nVal = nodeToReplaceWith->m_nVal;
-
-			if(nodeToReplaceWith->m_pParent)
-				nodeToReplaceWith->m_pParent->m_pRightChild = NULL; // erase link to current right most node
+			/* check if left of right child of parent*/
+			if(nodeToReplace->m_pParent)
+			{
+				// left child of parent
+				if(nodeToReplace->m_nVal < nodeToReplace->m_pParent->m_nVal)
+				{
+					nodeToReplace->m_pParent->m_pLeftChild = NULL;
+					
+				}
+				else
+				{
+					nodeToReplace->m_pParent->m_pRightChild = NULL;
+				}
+				delete nodeToReplace;
+			}
 		}
 		else
 		{
-			if(nodeToDelete->m_pParent)
+			TreeNode* nodeToReplaceWith = GetRightMostNode(nodeToReplace->m_pLeftChild);
+			if(nodeToReplaceWith == NULL)
 			{
-				if(nodeToDelete->m_pParent->m_nVal > nodeToDelete->m_nVal)
-					nodeToDelete->m_pParent->m_pLeftChild = NULL;
+				if(nodeToReplace->m_nVal < nodeToReplace->m_pParent->m_nVal)
+					nodeToReplace->m_pParent->m_pLeftChild = nodeToReplace->m_pLeftChild;
 				else
-					nodeToDelete->m_pParent->m_pRightChild = NULL;
+					nodeToReplace->m_pParent->m_pRightChild = nodeToReplace->m_pLeftChild;
+
+				delete nodeToReplace;
 			}
-			delete nodeToDelete;
+			else
+			{
+				nodeToReplaceWith->m_pRightChild 
+			}
+
+		}
+
+
+
+		if(nodeToReplaceWith)
+		{
+			std::cout << nodeToReplace->m_nVal << " will be replaced with " << nodeToReplaceWith->m_nVal << "\n";
+		
+
+		}
+		else
+		{
+			if(nodeToReplace->m_pParent)
+			{
+				if(nodeToReplace->m_pParent->m_nVal > nodeToReplace->m_nVal)
+					nodeToReplace->m_pParent->m_pLeftChild = NULL;
+				else
+					nodeToReplace->m_pParent->m_pRightChild = NULL;
+			}
+			delete nodeToReplace;
 		}
 	}
 	return true;
@@ -145,5 +185,15 @@ void BinarySearchTree::PrintTree(TreeNode* pRoot)
 		std::cout << "right child\n";
 		PrintTree(pRoot->m_pRightChild);
 	}
+}
+
+void BinarySearchTree::FreeTree(TreeNode* pRoot)
+{
+	if(pRoot == NULL)
+		return;
+	FreeTree(pRoot->m_pLeftChild);
+	FreeTree(pRoot->m_pRightChild);
+
+	delete pRoot;
 }
 

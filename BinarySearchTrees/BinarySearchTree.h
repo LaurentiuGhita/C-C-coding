@@ -16,6 +16,7 @@ class BinarySearchTree
 {
 public:
 	BinarySearchTree() : m_pRoot(NULL) {};
+	~BinarySearchTree();
 	void AddElement(int nVal);
 	bool SearchElement(int nVal);
 	bool DeleteElement(int nVal);
@@ -27,6 +28,7 @@ private:
 	bool DeleteElementHelper(int nVal, TreeNode*& pRoot);
 	TreeNode* GetRightMostNode(TreeNode*& pRoot);
 	void PrintTree(TreeNode* pRoot);
+	void FreeTree(TreeNode* pRoot);
 
 	TreeNode* m_pRoot;
 };
