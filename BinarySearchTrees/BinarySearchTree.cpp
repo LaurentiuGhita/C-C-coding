@@ -1,5 +1,7 @@
 #include "BinarySearchTree.h"
 
+const int MIN = -9999;
+
 TreeNode::TreeNode(int nVal, TreeNode* pParent) : m_nVal(nVal) 
 { 
 	m_pRightChild = m_pLeftChild = NULL; 
@@ -18,7 +20,7 @@ void BinarySearchTree::AddElement(int nVal)
 
 bool BinarySearchTree::SearchElement(int nVal)
 {
-	if(NULL != SearchElementHelper(nVal, m_pRoot))
+	if(NULL != SearchElementHelper(nVal, const_cast<const TreeNode*&>(m_pRoot)))
 		return true;
 	return false;
 }
@@ -59,7 +61,7 @@ void BinarySearchTree::AddElementHelper(int nVal, TreeNode*& pRoot)
 	}
 }
 
-TreeNode* BinarySearchTree::SearchElementHelper(int nVal, const TreeNode* pRoot)
+TreeNode* BinarySearchTree::SearchElementHelper(int nVal, const TreeNode*& pRoot)
 {
 	if(pRoot == NULL)
 		return NULL;
@@ -68,14 +70,14 @@ TreeNode* BinarySearchTree::SearchElementHelper(int nVal, const TreeNode* pRoot)
 		return const_cast<TreeNode*> (pRoot);
 
 	if(nVal < pRoot->m_nVal)
-		return SearchElementHelper(nVal, pRoot->m_pLeftChild);
+		return SearchElementHelper(nVal, const_cast<const TreeNode*&>(pRoot->m_pLeftChild));
 	else
-		return SearchElementHelper(nVal, pRoot->m_pRightChild);
+		return SearchElementHelper(nVal, const_cast<const TreeNode*&>(pRoot->m_pRightChild));
 }
 
 bool BinarySearchTree::DeleteElementHelper(int nVal, TreeNode*& pRoot)
 {
-	TreeNode* nodeToReplace = SearchElementHelper(nVal, pRoot);
+	TreeNode* nodeToReplace = SearchElementHelper(nVal, const_cast<const TreeNode*&>(pRoot));
 
 	if(nodeToReplace == NULL)
 	{
@@ -136,6 +138,99 @@ TreeNode* BinarySearchTree::GetMaxFromLeftTree(TreeNode*& pRoot)
 		return pRoot;
 }
 
+int BinarySearchTree::GetMinimumHelper(const TreeNode*& pRoot)
+{
+	int ret = MIN;
+	if(pRoot == NULL)
+		return ret;
+
+	if(pRoot->m_pLeftChild == NULL)
+		return pRoot->m_nVal;
+	else
+		return GetMinimumHelper(const_cast<const TreeNode*&>(pRoot->m_pLeftChild));
+}
+
+int BinarySearchTree::GetMaximumHelper(const TreeNode*& pRoot)
+{
+	int ret = MIN;
+	if(pRoot == NULL)
+		return ret;
+
+	if(pRoot->m_pRightChild == NULL)
+		return pRoot->m_nVal;
+	else
+		return GetMaximumHelper(const_cast<const TreeNode*&>(pRoot->m_pRightChild));
+}
+
+int BinarySearchTree::GetMinimum()
+{
+	return GetMinimumHelper(const_cast<const TreeNode*&>(m_pRoot));
+}
+
+int BinarySearchTree::GetMaximum()
+{
+	return GetMaximumHelper(const_cast<const TreeNode*&>(m_pRoot));
+}
+
+int BinarySearchTree::GetPredecessor(int nVal)
+{
+	TreeNode* pNode = SearchElementHelper(nVal, const_cast<const TreeNode*&>(m_pRoot));
+
+	if(pNode)
+	{
+		if(pNode->m_pLeftChild != NULL)
+			return GetMinimumHelper(const_cast<const TreeNode*&>(pNode->m_pLeftChild));
+		else
+		{
+			/* get first parent that has a right child */	
+			TreeNode* pParent = pNode->m_pParent;
+			while(pParent != NULL)
+			{
+				if(pParent->m_nVal > pNode->m_nVal)
+					pParent = pParent->m_pParent;
+				else
+					return pParent->m_nVal;
+			}
+
+			/* no predecessor found*/
+			std::cout << "Element " << nVal << " doesn't have a predecessor\n";
+			return MIN;
+		}
+	}
+	else
+	{
+		return MIN;
+	}
+}
+
+int BinarySearchTree::GetSuccessor(int nVal)
+{
+	TreeNode* pNode = SearchElementHelper(nVal, const_cast<const TreeNode*&>(m_pRoot));
+
+	if(pNode)
+	{
+		if(pNode->m_pRightChild)
+			return GetMinimumHelper(const_cast<const TreeNode*&>(pNode->m_pRightChild));
+		else
+		{
+			/*get first parent that has left child*/
+			TreeNode* pParent = pNode->m_pParent;
+			while(pParent != NULL)
+			{
+				if(pParent->m_nVal < pNode->m_nVal)
+					pParent = pParent->m_pParent;
+				else
+					return pParent->m_nVal;
+			}
+
+			std::cout << "Element " << nVal << " doesn't have a successor";
+			return MIN;
+		}
+	}
+	else
+		return MIN;
+}
+
 void BinarySearchTree::PrintTree(TreeNode* pRoot)
 {
 	if(pRoot == NULL)
@@ -169,6 +264,12 @@ void BinarySearchTree::PrintTree(TreeNode* pRoot)
 		PrintTree(pRoot->m_pRightChild);
 	}
 }
+
+void BinarySearchTree::PrintSortedTreeHelper(const TreeNode*& pRoot)
+{
+
+}
+
 
 void BinarySearchTree::FreeTree(TreeNode* pRoot)
 {

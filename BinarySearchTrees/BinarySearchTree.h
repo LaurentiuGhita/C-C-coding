@@ -21,14 +21,22 @@ public:
 	bool SearchElement(int nVal);
 	bool DeleteElement(int nVal);
 	void PrintBinaryTree();
+	int  GetMinimum();
+	int  GetMaximum();
+	int  GetPredecessor(int nVal);
+	int  GetSuccessor(int nVal);
+	int  PrintSortedTree();
 
 private:
 	void AddElementHelper(int nVal, TreeNode*& pRoot);
-	TreeNode* SearchElementHelper(int nVal, const TreeNode* pRoot);
+	TreeNode* SearchElementHelper(int nVal, const TreeNode*& pRoot);
 	bool DeleteElementHelper(int nVal, TreeNode*& pRoot);
 	TreeNode* GetMaxFromLeftTree(TreeNode*& pRoot);
+	int GetMinimumHelper(const TreeNode*& pRoot);
+	int GetMaximumHelper(const TreeNode*& pRoot);
 	void PrintTree(TreeNode* pRoot);
 	void FreeTree(TreeNode* pRoot);
+	void PrintSortedTreeHelper(const TreeNode*&);
 
 	TreeNode* m_pRoot;
 };

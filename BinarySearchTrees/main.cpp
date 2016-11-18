@@ -2,10 +2,6 @@
 
 int main()
 {
-	int elemToDelete;
-
-	std::cout << "Element to delete \n"; std::cin >> elemToDelete; 
-
 	BinarySearchTree binaryTree;
 	binaryTree.AddElement(50);
 	binaryTree.AddElement(49);
@@ -15,7 +11,7 @@ int main()
 	binaryTree.AddElement(21);
 	binaryTree.AddElement(27);
 	binaryTree.AddElement(26);
-	
+	binaryTree.AddElement(59);
 #if 0
 	binaryTree.AddElement(3);
 	binaryTree.AddElement(1);
@@ -34,8 +30,6 @@ int main()
 	std::cout << binaryTree.SearchElement(2) << "\n";
 	std::cout << binaryTree.SearchElement(10) << "\n";
 #endif
-	binaryTree.PrintBinaryTree();
-	std::cout << "\n";
-	binaryTree.DeleteElement(elemToDelete);
-	binaryTree.PrintBinaryTree();
+	//std::cout << binaryTree.GetMaximum() << " " << binaryTree.GetMinimum() << "\n";
+	std::cout << binaryTree.GetSuccessor(27);
 }
