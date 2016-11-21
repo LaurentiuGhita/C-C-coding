@@ -85,8 +85,11 @@ bool BinarySearchTree::DeleteElementHelper(int nVal, TreeNode*& pRoot)
 		return false;
 	}
 
+	/*predecessor*/
 	TreeNode* pMaxFromLeft = GetMaxFromLeftTree(nodeToReplace->m_pLeftChild);
 	
+	/* we could also find the successor */
+
 	/* node to delete doesn't have a left child*/
 	if(pMaxFromLeft == NULL)
 	{
