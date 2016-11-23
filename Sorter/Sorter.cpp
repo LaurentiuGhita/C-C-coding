@@ -1,5 +1,6 @@
 #include "Sorter.h"
 #include "../Utils/utils.h"
+#include <queue>
 
 Sorter::Sorter(std::istream& in)
 {
@@ -11,12 +12,14 @@ Sorter::Sorter(std::istream& in)
 		int aux;
 		in >> aux;
 		m_unsortedElements.push_back(aux);
+		m_mergeSortedElements.push_back(aux);
 	}
 }
 
 Sorter::Sorter(std::vector<int> input)
 {
 	m_unsortedElements = input;
+	m_mergeSortedElements = input;
 }
 
 void Sorter::SelectionSort()
@@ -37,6 +40,76 @@ void Sorter::SelectionSort()
 	}
 
 	printVector(sortedVector);
+}
+
+void Sorter::Merge(std::vector<int>& elements, int nStart, int nMiddle, int nEnd)
+{
+	std::queue<int> leftSide;
+	std::queue<int> rightSide;
+	for(int i = nStart; i < nEnd; i++)
+	{
+		if(i < nMiddle)
+			leftSide.push(elements[i]);
+		else
+			rightSide.push(elements[i]);
+	}
+
+	int index = nStart;
+	while(!leftSide.empty() && !rightSide.empty())
+	{
+		if(leftSide.front() < rightSide.front())
+		{
+			elements[index] = leftSide.front();
+			leftSide.pop();
+		}
+		else
+		{
+			elements[index] = rightSide.front();
+			rightSide.pop();
+		}
+
+		index++;
+	}
+
+	/*copy rest of elements*/
+	if(!leftSide.empty())
+	{
+		while(!leftSide.empty())
+		{
+			elements[index] = leftSide.front();
+			leftSide.pop();
+		}
+	}
+
+	if(!rightSide.empty())
+	{
+		while(!rightSide.empty())
+		{
+			elements[index] = rightSide.front();
+			rightSide.pop();
+		}
+	}
+}
+
+void Sorter::MergeSort(int nStart, int nEnd)
+{
+
+	if(nStart < nEnd)
+	{
+		int nMiddle = (nStart + nEnd) / 2;
+		MergeSort(nStart, nMiddle);
+		MergeSort(nMiddle + 1, nEnd);
+		Merge(m_mergeSortedElements, nStart, nMiddle, nEnd);
+	}
+}
+
+void Sorter::PrintMergeSorted()
+{
+	std::cout << "Merge sorted: ";
+	for(int i = 0; i < m_mergeSortedElements.size(); i++)
+		std::cout << m_mergeSortedElements[i] << " ";
+
+	std::cout << "\n";
 }
 
 
