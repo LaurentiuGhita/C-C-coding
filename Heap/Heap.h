@@ -36,6 +36,7 @@ public:
 	void AddElement(int nVal, int nPriority);
 	void Heapify();
 	void Print();
+	bool CheckIfSmallerThanKthElement(int nVal, int nStartIndex, int nKThPos);
 
 protected:
 	void HeapifyHelper(HeapElement* pRoot);

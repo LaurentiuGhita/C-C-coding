@@ -161,6 +161,57 @@ void Heap::HeapifyHelper(HeapElement* pRoot)
 		pSecondChild = &m_Elements[nFirstChildIndex];
 }
 
+/* true if element nVal smaller than nKthPos */
+bool Heap::CheckIfSmallerThanKthElement(int nVal, int nStartIndex, int nKThPos)
+{
+	static int searchedElements = 0;
+	static bool bElementFound = false;
+	bool bRet = false;
+
+	if(bElementFound == true)
+	{
+		return true;
+	}
+	else
+	{
+		
+		if(searchedElements >= nKThPos)
+			return false;
+		
+		searchedElements++;
+
+		if(m_Elements[nStartIndex].m_nVal >= nVal)
+		{
+			bElementFound = true;
+			return true;
+		}
+		else
+		{
+				int nFirstChildIndex = GetFirstChildIndex(nStartIndex);
+
+				if(m_Elements[nStartIndex].m_nVal < nVal)
+				{
+					if(nFirstChildIndex < m_nSize)
+					{
+						if(m_Elements[nFirstChildIndex].m_nVal <= nVal)
+							bRet = CheckIfSmallerThanKthElement(nVal, nFirstChildIndex, nKThPos);
+					}
+
+					if(bRet == false && searchedElements < nKThPos)
+					{
+						int nSecondChildIndex = GetSecondChildIndex(nStartIndex);
+						if(nSecondChildIndex < m_nSize)
+						{
+							if(m_Elements[nSecondChildIndex].m_nVal <= nVal)
+								bRet = CheckIfSmallerThanKthElement(nVal, nSecondChildIndex, nKThPos);
+						}
+					}
+				}
+				return bRet;
+		}
+	}
+}
+
 void Heap::Print()
 {
 	if(m_nSize == START_INDEX)
