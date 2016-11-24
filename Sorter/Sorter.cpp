@@ -46,12 +46,17 @@ void Sorter::Merge(std::vector<int>& elements, int nStart, int nMiddle, int nEnd
 {
 	std::queue<int> leftSide;
 	std::queue<int> rightSide;
-	for(int i = nStart; i < nEnd; i++)
+	for(int i = nStart; i <= nEnd; i++)
 	{
-		if(i < nMiddle)
+		if(i <= nMiddle)
+		{
+
 			leftSide.push(elements[i]);
+		}
 		else
+		{
 			rightSide.push(elements[i]);
+		}
 	}
 
 	int index = nStart;
@@ -78,6 +83,7 @@ void Sorter::Merge(std::vector<int>& elements, int nStart, int nMiddle, int nEnd
 		{
 			elements[index] = leftSide.front();
 			leftSide.pop();
+			++index;
 		}
 	}
 
@@ -87,13 +93,13 @@ void Sorter::Merge(std::vector<int>& elements, int nStart, int nMiddle, int nEnd
 		{
 			elements[index] = rightSide.front();
 			rightSide.pop();
+			++index;
 		}
 	}
 }
 
 void Sorter::MergeSort(int nStart, int nEnd)
 {
-
 	if(nStart < nEnd)
 	{
 		int nMiddle = (nStart + nEnd) / 2;
@@ -101,6 +107,8 @@ void Sorter::MergeSort(int nStart, int nEnd)
 		MergeSort(nMiddle + 1, nEnd);
 		Merge(m_mergeSortedElements, nStart, nMiddle, nEnd);
 	}
+
+
 }
 
 void Sorter::PrintMergeSorted()

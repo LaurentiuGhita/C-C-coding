@@ -13,7 +13,7 @@ public:
 
 	void Merge(std::vector<int>& elements, int nStart, int nMiddle, int nEnd);
 
-	void MergeSort() { MergeSort(0, m_mergeSortedElements.size());}
+	void MergeSort() { MergeSort(0, m_mergeSortedElements.size() - 1);}
 	void MergeSort(int nStart, int nEnd);
 	void SelectionSort();
 
