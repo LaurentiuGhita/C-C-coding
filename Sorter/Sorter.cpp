@@ -1,6 +1,8 @@
 #include "Sorter.h"
 #include "../Utils/utils.h"
 #include <queue>
+#include <stdlib.h>
+#include <time.h>  
 
 Sorter::Sorter(std::istream& in)
 {
@@ -13,12 +15,14 @@ Sorter::Sorter(std::istream& in)
 		in >> aux;
 		m_unsortedElements.push_back(aux);
 		m_mergeSortedElements.push_back(aux);
+		m_quickSortElements.push_back(aux);
 	}
 }
 
 Sorter::Sorter(std::vector<int> input)
 {
 	m_unsortedElements = input;
+	m_mergeSortedElements = input;
 	m_mergeSortedElements = input;
 }
 
@@ -107,8 +111,6 @@ void Sorter::MergeSort(int nStart, int nEnd)
 		MergeSort(nMiddle + 1, nEnd);
 		Merge(m_mergeSortedElements, nStart, nMiddle, nEnd);
 	}
-
-
 }
 
 void Sorter::PrintMergeSorted()
@@ -118,6 +120,17 @@ void Sorter::PrintMergeSorted()
 		std::cout << m_mergeSortedElements[i] << " ";
 
 	std::cout << "\n";
+}
+
+void Sorter::QuickSort(int nStart, int nEnd)
+{
+ 	srand (time(NULL));
+	int nPivotIndex = nStart + rand() % (end - nStart + 1);
+
+	int nLessThanIndex = nStart;
+	int nBiggerThanIndex = nPivotIndex + 1;
+
+	
 }
 
 
