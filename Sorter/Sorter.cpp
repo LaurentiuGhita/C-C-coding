@@ -122,17 +122,76 @@ void Sorter::PrintMergeSorted()
 	std::cout << "\n";
 }
 
-void Sorter::QuickSort(int nStart, int nEnd)
+void Sorter::QuickSort(std::vector<int>& elements, int nStart, int nEnd)
 {
- 	srand (time(NULL));
-	int nPivotIndex = nStart + rand() % (end - nStart + 1);
+ 	
+	int nPivotIndex;
 
-	int nLessThanIndex = nStart;
-	int nBiggerThanIndex = nPivotIndex + 1;
-
-	
+	if(nStart < nEnd)
+	{
+		nPivotIndex = Partition(elements, nStart, nEnd);
+		QuickSort(elements, nStart, nPivotIndex-1);
+		QuickSort(elements, nPivotIndex + 1, nEnd);
+	}
 }
 
+int Sorter::Partition(std::vector<int>& elements, int nStart, int nEnd)
+{
+	int nPivotIndex;
+	srand (time(NULL));
+	if(nStart < nEnd)
+	{
+		nPivotIndex = nStart + rand() % (nEnd - nStart + 1);
+		int nLower = nStart;
+		int nUpper = nEnd;
+
+		bool bGoToLeft = false;
+		bool bGoToRight = true;
+		while(nLower != nUpper)
+		{
+			if(bGoToRight)
+			{
+				if(elements[nLower] < elements[nPivotIndex])
+				{
+					nLower++;
+				}
+				else
+				{
+					mySwap(elements[nLower], elements[nPivotIndex]);
+					nPivotIndex = nLower;
+					bGoToRight = false;
+					bGoToLeft = true;
+				}
+			}
+			if(bGoToLeft)
+			{
+				if(elements[nUpper] > elements[nPivotIndex])
+				{
+					nUpper--;
+				}
+				else
+				{
+					mySwap(elements[nUpper], elements[nPivotIndex]);
+					nPivotIndex = nUpper;
+					bGoToLeft = false;
+					bGoToRight = true;
+				}
+			}
+		}
+	}
+
+	return nPivotIndex;
+}
+
+
+void Sorter::PrintQuickSorted()
+{
+	std::cout << "Merge sorted: ";
+	for(int i = 0; i < m_quickSortElements.size(); i++)
+		std::cout << m_quickSortElements[i] << " ";
+
+	std::cout << "\n";
+}
 
 
 

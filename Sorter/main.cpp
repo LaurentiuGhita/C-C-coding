@@ -15,7 +15,10 @@ int main()
 	input.push_back(99);
 
 	Sorter mySorter(input);
-
+#if 0
 	mySorter.MergeSort();
 	mySorter.PrintMergeSorted();
+#endif
+	std::cout << mySorter.Partition(input, 0, input.size()-1) << "\n";
+	mySorter.PrintQuickSorted();
 }

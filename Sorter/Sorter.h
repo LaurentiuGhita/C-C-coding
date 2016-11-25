@@ -16,9 +16,12 @@ public:
 	void MergeSort() { MergeSort(0, m_mergeSortedElements.size() - 1);}
 	void MergeSort(int nStart, int nEnd);
 	void SelectionSort();
-	void QuickSort(int nStart, int nEnd);
+	void QuickSort(std::vector<int>& elements, int nStart, int nEnd);
+	int  Partition(std::vector<int>& elements, int nStart, int nEnd);
+
 
 	void PrintMergeSorted();
+	void PrintQuickSorted();
 private:
 
 	int m_nSize;
