@@ -19,6 +19,7 @@ int main()
 	mySorter.MergeSort();
 	mySorter.PrintMergeSorted();
 #endif
-	std::cout << mySorter.Partition(input, 0, input.size()-1) << "\n";
+	//std::cout << mySorter.Partition(input, 0, input.size()-1) << "\n";
+	mySorter.QuickSort();
 	mySorter.PrintQuickSorted();
 }

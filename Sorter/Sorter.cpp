@@ -23,7 +23,7 @@ Sorter::Sorter(std::vector<int> input)
 {
 	m_unsortedElements = input;
 	m_mergeSortedElements = input;
-	m_mergeSortedElements = input;
+	m_quickSortElements = input;
 }
 
 void Sorter::SelectionSort()
@@ -129,7 +129,7 @@ void Sorter::QuickSort(std::vector<int>& elements, int nStart, int nEnd)
 
 	if(nStart < nEnd)
 	{
-		nPivotIndex = Partition(elements, nStart, nEnd);
+		nPivotIndex = Partition2(elements, nStart, nEnd);
 		QuickSort(elements, nStart, nPivotIndex-1);
 		QuickSort(elements, nPivotIndex + 1, nEnd);
 	}
@@ -141,7 +141,7 @@ int Sorter::Partition(std::vector<int>& elements, int nStart, int nEnd)
 	srand (time(NULL));
 	if(nStart < nEnd)
 	{
-		nPivotIndex = nStart + rand() % (nEnd - nStart + 1);
+		nPivotIndex = nEnd;//nStart + rand() % (nEnd - nStart + 1);
 		int nLower = nStart;
 		int nUpper = nEnd;
 
@@ -161,6 +161,7 @@ int Sorter::Partition(std::vector<int>& elements, int nStart, int nEnd)
 					nPivotIndex = nLower;
 					bGoToRight = false;
 					bGoToLeft = true;
+					//nUpper--;
 				}
 			}
 			if(bGoToLeft)
@@ -175,18 +176,47 @@ int Sorter::Partition(std::vector<int>& elements, int nStart, int nEnd)
 					nPivotIndex = nUpper;
 					bGoToLeft = false;
 					bGoToRight = true;
+					//nLower++;
 				}
 			}
 		}
 	}
 
+	std::cout << "pivot = " <<nPivotIndex << " vector: ";
+	for(int i = nStart; i<= nEnd; i++)
+		std::cout << elements[i] << " ";
+
+	std::cout << "\n";
+
 	return nPivotIndex;
+}
+
+int Sorter::Partition2(std::vector<int>& elements, int nStart, int nEnd)
+{
+	int nPivotIndex = nEnd;
+	int lowerIndex = nStart;
+
+	for(int i = nStart; i < nEnd; i++)
+	{
+		if(elements[i] <elements[nPivotIndex])
+		{
+			if(i != lowerIndex)
+				mySwap(elements[i], elements[lowerIndex]);
+			lowerIndex++;
+		}
+	}
+
+	if(nPivotIndex != lowerIndex)
+		mySwap(elements[nPivotIndex], elements[lowerIndex]);
+
+	return lowerIndex;
+
 }
 
 
 void Sorter::PrintQuickSorted()
 {
-	std::cout << "Merge sorted: ";
+	std::cout << "Quick sorted: ";
 	for(int i = 0; i < m_quickSortElements.size(); i++)
 		std::cout << m_quickSortElements[i] << " ";
 
