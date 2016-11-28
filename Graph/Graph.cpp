@@ -1,4 +1,5 @@
 #include "Graph.h"
+#include "../Heap/Heap.h" /*PriorityQueue*/
 
 Graph::Graph()
 {
@@ -86,12 +87,12 @@ void Graph::DfsTraversal(int nStart)
 
 void Graph::BfsTraversal(int x)
 {
-	if(m_nDiscovered[x] == false)
+	if(m_bDiscovered[x] == false)
 	{
-		m_nDiscovered = true;
+		m_bDiscovered[x] = true;
 	}
 
-	EdgeNode* aux = m_Edges[nStart];
+	EdgeNode* aux = m_Edges[x];
 	while(aux != NULL)
 	{
 		int y = aux->m_y;
