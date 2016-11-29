@@ -23,12 +23,16 @@ public:
 	void PrintGraph();
 	
 	void DfsTraversal(int nStart);
+
 	void BfsTraversal(int nStart);
+	void ShortestPath(int x, int y);
+	void ConectedComponents();
 
 private:
 	int InsertEdge(int x, int y, bool bDirected, int nWeight = 0);
 	void InitSearch();
 	void ProcessingBFSEdge(int x, int y);
+
 
 	bool m_bProcessed[MAX_VERTICES + 1];
 	bool m_bDiscovered[MAX_VERTICES + 1];

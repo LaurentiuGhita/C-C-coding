@@ -1,5 +1,6 @@
 #include "Graph.h"
 #include <queue>
+#include <stack>
 
 Graph::Graph()
 {
@@ -23,7 +24,7 @@ void Graph::InitSearch()
 
 void Graph::ProcessingBFSEdge(int x, int y)
 {
-	std::cout << "ProcessingBFSEdge " << x << "-" << y << "\n";
+	//std::cout << "ProcessingBFSEdge " << x << "-" << y << "\n";
 }
 
 void Graph::ReadGraph(std::istream& in)
@@ -91,7 +92,7 @@ void Graph::DfsTraversal(int nStart)
 
 void Graph::BfsTraversal(int x)
 {
-	InitSearch();
+	//InitSearch();
 	std::queue<int> processingQueue;
 	if(m_bDiscovered[x] == false)
 	{
@@ -102,7 +103,7 @@ void Graph::BfsTraversal(int x)
 	while(processingQueue.empty() == false)
 	{
 		int nNodeIndex = processingQueue.front();
-		std::cout << "Processing node " << nNodeIndex << "\n";
+		//std::cout << "Processing node " << nNodeIndex << "\n";
 		EdgeNode* aux = m_Edges[nNodeIndex];
 
 		/* Process edges */
@@ -121,13 +122,54 @@ void Graph::BfsTraversal(int x)
 
 			if(m_bProcessed[y] != true || m_bDirected == true)
 			{
-				std::cout << "\t"; 
+				//std::cout << "\t"; 
 				ProcessingBFSEdge(nNodeIndex,y);
 			}
 			aux = aux->m_pNext;
 		}
 		processingQueue.pop();
 		m_bProcessed[nNodeIndex] = true;
-		std::cout << "Finished processing node " << nNodeIndex << "\n";
+		//std::cout << "Finished processing node " << nNodeIndex << "\n";
+		std::cout << "Node " << nNodeIndex << "\n";
+	}
+}
+
+void Graph::ShortestPath(int x, int y)
+{
+	BfsTraversal(x);
+	int end = y;
+	std::stack<int> path;
+	while(m_nParent[end] != NO_PARENT || end != x)
+	{
+		path.push(end);
+		end = m_nParent[end];
+	}
+
+	if(end == x)
+	{
+		std::cout << "shortest path: " << x << " ";
+		while(!path.empty())
+		{
+			std::cout << path.top() << " ";
+			path.pop();
+		}
+	}
+	std::cout << "\n";
+}
+
+
+void Graph::ConectedComponents()
+{
+	InitSearch();
+	int start = 1;
+
+	int nConnected = 0;
+	for(int i = 1; i < m_nVertices; i++)
+	{
+		if(m_bDiscovered[i] == false)
+		{
+			std::cout << "Connected component " << ++nConnected << "\n";
+			BfsTraversal(i);
+		}
 	}
 }
