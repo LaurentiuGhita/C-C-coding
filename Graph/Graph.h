@@ -26,9 +26,9 @@ public:
 	void BfsTraversal(int nStart);
 
 private:
-	int InsertEdge(int x, int y, int nWeight = 0);
+	int InsertEdge(int x, int y, bool bDirected, int nWeight = 0);
 	void InitSearch();
-	void ProcessingEdge(int x, int y);
+	void ProcessingBFSEdge(int x, int y);
 
 	bool m_bProcessed[MAX_VERTICES + 1];
 	bool m_bDiscovered[MAX_VERTICES + 1];

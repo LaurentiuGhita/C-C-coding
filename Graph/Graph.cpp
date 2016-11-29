@@ -1,5 +1,5 @@
 #include "Graph.h"
-#include "../Heap/Heap.h" /*PriorityQueue*/
+#include <queue>
 
 Graph::Graph()
 {
@@ -21,9 +21,9 @@ void Graph::InitSearch()
 	}
 }
 
-void Graph::ProcessingEdge(int x, int y)
+void Graph::ProcessingBFSEdge(int x, int y)
 {
-	std::cout << "ProcessingEdge " << x << "-" << y << "\n";
+	std::cout << "ProcessingBFSEdge " << x << "-" << y << "\n";
 }
 
 void Graph::ReadGraph(std::istream& in)
@@ -39,19 +39,19 @@ void Graph::ReadGraph(std::istream& in)
 		if(m_bWeights)
 			in >> weight;
 
-		InsertEdge(x, y, weight);
+		InsertEdge(x, y, m_bDirected, weight);
 	}
 }
 
-int Graph::InsertEdge(int x, int y, int weight)
+int Graph::InsertEdge(int x, int y, bool bDirected, int weight)
 {
 	EdgeNode* newEdge = new EdgeNode(y, m_Edges[x], weight);
 
 	m_Edges[x] = newEdge;
 
-	if(m_bDirected == false)
+	if(bDirected == false)
 	{
-		InsertEdge(y, x, weight);
+		InsertEdge(y, x, true, weight);
 	}
 
 	m_nEdges++;
@@ -59,6 +59,10 @@ int Graph::InsertEdge(int x, int y, int weight)
 
 void Graph::PrintGraph()
 {
+	if(m_bDirected)
+		std::cout << "Graph is directed \n";
+	else
+		std::cout << "Graph is undirected \n";
 	for(int i = 0; i < m_nVertices; i++)
 	{
 		bool bEmpty = true;
@@ -87,18 +91,43 @@ void Graph::DfsTraversal(int nStart)
 
 void Graph::BfsTraversal(int x)
 {
+	InitSearch();
+	std::queue<int> processingQueue;
 	if(m_bDiscovered[x] == false)
 	{
 		m_bDiscovered[x] = true;
+		processingQueue.push(x);
 	}
 
-	EdgeNode* aux = m_Edges[x];
-	while(aux != NULL)
+	while(processingQueue.empty() == false)
 	{
-		int y = aux->m_y;
-		if(m_bDiscovered[y] == false)
+		int nNodeIndex = processingQueue.front();
+		std::cout << "Processing node " << nNodeIndex << "\n";
+		EdgeNode* aux = m_Edges[nNodeIndex];
+
+		/* Process edges */
+		while(aux != NULL)
 		{
-			m_nParent[y] = x;
+			int y = aux->m_y;
+
+			/*Add it to processing queue and update parrent*/
+			if(m_bDiscovered[y] == false)
+			{
+				m_nParent[y] = nNodeIndex;
+				m_bDiscovered[y] = true;
+				if(m_bProcessed[y] == false)
+					processingQueue.push(y);
+			}
+
+			if(m_bProcessed[y] != true || m_bDirected == true)
+			{
+				std::cout << "\t"; 
+				ProcessingBFSEdge(nNodeIndex,y);
+			}
+			aux = aux->m_pNext;
 		}
+		processingQueue.pop();
+		m_bProcessed[nNodeIndex] = true;
+		std::cout << "Finished processing node " << nNodeIndex << "\n";
 	}
 }

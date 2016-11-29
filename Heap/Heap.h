@@ -55,7 +55,7 @@ public:
 	int  GetSize() { return m_nSize; }
 	void Enqueue(int nVal, int nPriority) { AddElement(nVal, nPriority); }
 	void Enqueue(int nVal) { AddElement(nVal, nVal); }
-	int GetMin() { return GetMinimum(); }
+	int  GetMin() { return GetMinimum(); }
 	void Dequeue() { Heap::DeleteMinimum(); };
 	void Print() { Heap::Print(); }
 };

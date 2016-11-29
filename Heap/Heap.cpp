@@ -212,6 +212,7 @@ bool Heap::CheckIfSmallerThanKthElement(int nVal, int nStartIndex, int nKThPos)
 	}
 }
 
+
 void Heap::Print()
 {
 	if(m_nSize == START_INDEX)

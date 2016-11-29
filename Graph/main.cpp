@@ -6,4 +6,5 @@ int main()
 	std::ifstream fin("input1");
 	myGraph.ReadGraph(fin);
 	myGraph.PrintGraph();
+	myGraph.BfsTraversal(1);
 }
