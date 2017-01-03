@@ -9,5 +9,6 @@ int main()
 	//myGraph.BfsTraversal(1);
 	//myGraph.ShortestPath(1,7);
 	//myGraph.ConectedComponents();
-	myGraph.IsGraphBipartite();
+	//myGraph.IsGraphBipartite();
+	myGraph.DfsTraversal(1);
 }

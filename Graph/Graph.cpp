@@ -103,8 +103,41 @@ void Graph::PrintGraph()
 	}
 }
 
-void Graph::DfsTraversal(int nStart)
+void Graph::DfsTraversal(int x)
 {
+	EdgeNode* aux = m_Edges[x];
+
+	m_bDiscovered[x] = true;
+	ProcessDFSVertexEarly(x);
+	if(aux == NULL)
+	{
+		/* no adjancent edges */
+		ProcessDFSVertexLate(x);
+		m_bProcessed[x] = true;
+		return;
+	}
+
+	/* go through all edged*/
+	while(aux != NULL)
+	{
+		int y = aux->m_y;
+
+		if(m_bDiscovered[y] == false)
+		{
+			m_nParent[y] = x;
+			ProcessDFSEdge(x, y);
+			DfsTraversal(y);
+		}
+		else
+		{
+			if(m_bDirected || m_bProcessed[y] == false)
+				ProcessDFSEdge(x,y);
+		}
+		aux = aux->m_pNext;
+	}
+
+	ProcessDFSVertexLate(x);
+	m_bProcessed[x] = true;
 
 }
 

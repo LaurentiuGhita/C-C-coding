@@ -49,9 +49,10 @@ private:
 	void InitSearch();
 	void ResetColor();
 	void ProcessingBFSEdge(int x, int y);
-	void ProcessDFSEdgeEarly(int x, int y);
-	void ProcessDFSEdgeLate(int x, int y);
-
+	
+	void ProcessDFSVertexEarly(int x) { /*std::cout << "Processing early vertex " << x << "\n"; */}
+	void ProcessDFSVertexLate(int x) { std::cout << "Processing late vertex " << x << "\n"; }
+	void ProcessDFSEdge(int x, int y) { std::cout << "Processing edge " << x << "-" << y << "\n"; }
 
 	bool m_bProcessed[MAX_VERTICES + 1];
 	bool m_bDiscovered[MAX_VERTICES + 1];
