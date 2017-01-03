@@ -8,5 +8,6 @@ int main()
 	myGraph.PrintGraph();
 	//myGraph.BfsTraversal(1);
 	//myGraph.ShortestPath(1,7);
-	myGraph.ConectedComponents();
+	//myGraph.ConectedComponents();
+	myGraph.IsGraphBipartite();
 }

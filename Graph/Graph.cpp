@@ -5,6 +5,7 @@
 Graph::Graph()
 {
 	m_nVertices = 0;
+	m_bBipartite = true;
 	for(int i = 0; i <= MAX_VERTICES; i++)
 	{
 		m_Edges[i] = NULL;
@@ -22,9 +23,27 @@ void Graph::InitSearch()
 	}
 }
 
+void Graph::ResetColor()
+{
+	for(int i = 0; i <= MAX_VERTICES; i++)
+	{
+		m_color[i] = UNCOLORED;
+	}
+}
+
 void Graph::ProcessingBFSEdge(int x, int y)
 {
+	/* plain processing */
 	//std::cout << "ProcessingBFSEdge " << x << "-" << y << "\n";
+
+	/* processing for bipartite*/
+	if(m_color[x] == m_color[y])
+	{
+		std::cout << "Graph is not bipartite due to edge " << x << "-" << y << "\n";
+		m_bBipartite = false;
+	}
+
+	m_color[y] = Complement(m_color[x]);
 }
 
 void Graph::ReadGraph(std::istream& in)
@@ -172,4 +191,21 @@ void Graph::ConectedComponents()
 			BfsTraversal(i);
 		}
 	}
+}
+
+bool Graph::IsGraphBipartite()
+{
+	InitSearch();
+	ResetColor();
+	for(int i = 1; i < m_nVertices; i++)
+	{
+		if(m_bDiscovered[i] == false)
+		{
+			m_color[i] = RED;
+			BfsTraversal(i);
+		}
+	}
+
+	if(m_bBipartite == true)
+		std::cout << "Graph is bipartite \n";
 }
