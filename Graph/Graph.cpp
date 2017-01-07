@@ -6,16 +6,18 @@ Graph::Graph()
 {
 	m_nVertices = 0;
 	m_bBipartite = true;
-	for(int i = 0; i <= MAX_VERTICES; i++)
+	for(int i = 0; i <= MAX_VERTICES ; i++)
 	{
 		m_Edges[i] = NULL;
 		m_OutDegree[i] = 0;
+		m_nDiscoveryTime[i] = -1;
+		m_nFinishTime[i] = -1;
 	}
 }
 
 void Graph::InitSearch()
 {
-	for(int i = 0; i <= MAX_VERTICES; i++)
+	for(int i = 0; i < m_nVertices; i++)
 	{
 		m_bProcessed[i] = false;
 		m_bDiscovered[i] = false;
@@ -25,7 +27,7 @@ void Graph::InitSearch()
 
 void Graph::ResetColor()
 {
-	for(int i = 0; i <= MAX_VERTICES; i++)
+	for(int i = 0; i < m_nVertices; i++)
 	{
 		m_color[i] = UNCOLORED;
 	}
@@ -103,16 +105,81 @@ void Graph::PrintGraph()
 	}
 }
 
+void Graph::DfsDiscoverTime()
+{
+	for(int i = 0; i < m_nVertices; i++)
+	{
+		if(m_nDiscoveryTime[i] != -1)
+		{
+			std::cout << "Node " << i << " discovered at time " << m_nDiscoveryTime[i] << "\n";
+		}
+	}
+}
+
+EdgeType Graph::GetEdgeType(int x, int y)
+{
+	if(m_nParent[y] == x)
+		return TREE;
+
+	if(m_bDiscovered[y] == true && m_bProcessed[y] == false && m_nParent[x] != y)
+		return BACK;
+
+	if(m_bProcessed[y] == true && m_nDiscoveryTime[x] < m_nDiscoveryTime[y])
+		return FORWARD;
+
+	if(m_bProcessed[y] == true && m_nDiscoveryTime[x] > m_nDiscoveryTime[y])
+		return CROSS;
+
+
+	return UNKNOWN;
+}
+
+void Graph::ProcessDFSVertexEarly(int x, int nTime)
+{
+	std::cout << "Node " << x << " started at time " << nTime << "\n";
+}
+
+void Graph::ProcessDFSVertexLate(int x, int nTime)
+{
+	std::cout << "Node " << x << " finished at time " << nTime << "\n";
+}
+
+void Graph::ProcessDFSEdge(int x, int y)
+{
+	if(GetEdgeType(x,y) == BACK)
+	{
+		std::cout << "Found cycle from " << y << " to " << x << "\n";
+		FindPath(y,x);
+	}
+	std::cout << "Processing edge " << x << " " << y << "\n";
+}
+
+void Graph::FindPath(int x, int y)
+{
+	if(x == y)
+	{
+		std::cout << x << "\n";
+	}
+	else
+	{
+		std::cout << y << " ";
+		FindPath(x, m_nParent[y]);
+	}
+}
+
 void Graph::DfsTraversal(int x)
 {
+	static int nTime = -1;
+	nTime++;
 	EdgeNode* aux = m_Edges[x];
 
 	m_bDiscovered[x] = true;
-	ProcessDFSVertexEarly(x);
+	m_nDiscoveryTime[x] = nTime;
+	ProcessDFSVertexEarly(x, nTime);
 	if(aux == NULL)
 	{
 		/* no adjancent edges */
-		ProcessDFSVertexLate(x);
+		ProcessDFSVertexLate(x, nTime);
 		m_bProcessed[x] = true;
 		return;
 	}
@@ -130,17 +197,17 @@ void Graph::DfsTraversal(int x)
 		}
 		else
 		{
-			if(m_bDirected || m_bProcessed[y] == false)
+			if(m_bDirected || (m_bDirected == false && GetEdgeType(x,y) == BACK))
 				ProcessDFSEdge(x,y);
 		}
 		aux = aux->m_pNext;
 	}
 
-	ProcessDFSVertexLate(x);
+	m_nFinishTime[x] = ++nTime;
+	ProcessDFSVertexLate(x, nTime);
+	
 	m_bProcessed[x] = true;
-
 }
-
 
 void Graph::BfsTraversal(int x)
 {

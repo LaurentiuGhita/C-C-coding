@@ -18,7 +18,9 @@ enum EdgeType
 {
 	CROSS,
 	BACK,
-	TREE
+	TREE,
+	FORWARD,
+	UNKNOWN
 };
 
 struct EdgeNode
@@ -43,6 +45,9 @@ public:
 	void ConectedComponents();
 	bool IsGraphBipartite();
 	COLOR Complement(COLOR x) { if(x == RED) return BLACK; return RED; }
+	void DfsDiscoverTime();
+	EdgeType GetEdgeType(int x, int y);
+	void FindPath(int x, int y);
 
 private:
 	int InsertEdge(int x, int y, bool bDirected, int nWeight = 0);
@@ -50,20 +55,21 @@ private:
 	void ResetColor();
 	void ProcessingBFSEdge(int x, int y);
 	
-	void ProcessDFSVertexEarly(int x) { /*std::cout << "Processing early vertex " << x << "\n"; */}
-	void ProcessDFSVertexLate(int x) { std::cout << "Processing late vertex " << x << "\n"; }
-	void ProcessDFSEdge(int x, int y) { std::cout << "Processing edge " << x << "-" << y << "\n"; }
+	void ProcessDFSVertexEarly(int x, int nTime); 
+	void ProcessDFSVertexLate(int x, int nTime);
+	void ProcessDFSEdge(int x, int y);
 
 	bool m_bProcessed[MAX_VERTICES + 1];
 	bool m_bDiscovered[MAX_VERTICES + 1];
 	int  m_nParent[MAX_VERTICES + 1];
-
 	bool m_bDirected;
 	bool m_bBipartite;
 	bool m_bWeights;
 	int m_nVertices;
 	int m_nEdges;
 	int m_OutDegree[MAX_VERTICES + 1];
+	int m_nDiscoveryTime[MAX_VERTICES + 1];
+	int m_nFinishTime[MAX_VERTICES + 1];
 	COLOR m_color[MAX_VERTICES + 1];
 	EdgeNode* m_Edges[MAX_VERTICES + 1];
 };
