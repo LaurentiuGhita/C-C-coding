@@ -68,6 +68,7 @@ private:
 	int m_nVertices;
 	int m_nEdges;
 	int m_OutDegree[MAX_VERTICES + 1];
+	int m_nReachableAncestor[MAX_VERTICES + 1]; /* earliest discovered reachable ancestor */
 	int m_nDiscoveryTime[MAX_VERTICES + 1];
 	int m_nFinishTime[MAX_VERTICES + 1];
 	COLOR m_color[MAX_VERTICES + 1];

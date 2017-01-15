@@ -22,6 +22,7 @@ void Graph::InitSearch()
 		m_bProcessed[i] = false;
 		m_bDiscovered[i] = false;
 		m_nParent[i] = NO_PARENT;
+		m_nReachableAncestor[i] = i;
 	}
 }
 
@@ -137,21 +138,66 @@ EdgeType Graph::GetEdgeType(int x, int y)
 void Graph::ProcessDFSVertexEarly(int x, int nTime)
 {
 	std::cout << "Node " << x << " started at time " << nTime << "\n";
+	m_nReachableAncestor[x] = x;
 }
 
 void Graph::ProcessDFSVertexLate(int x, int nTime)
 {
 	std::cout << "Node " << x << " finished at time " << nTime << "\n";
+
+	bool bRoot;
+	int time_x; // earliest reachable time for x
+	int time_parent; // earliest reachable time for parent[x]
+
+	// root with more childs
+	if(m_nParent[x] < 1)
+	{
+		if(m_OutDegree[x] > 1)
+			std::cout << "Root articulation vertex " << x << "\n";
+		return;
+	}
+
+	bool bRootParent = (m_nParent[m_nParent[x]] < 1);
+	if((m_nReachableAncestor[x] == m_nParent[x]) && !bRootParent)
+		std::cout << "Parent articulation vertex " << m_nParent[x] << "\n";
+
+	if(m_nReachableAncestor[x] == x)
+	{
+		std::cout << "Bridge articulation vertex " << m_nParent[x] << "\n";
+	
+		/* check if not tree leaf*/
+		if(m_OutDegree[x] > 0)
+			std::cout << "Bridge articulation vertex " << x << "\n";
+	}
+
+	time_x = m_nDiscoveryTime[m_nReachableAncestor[x]];
+	time_parent = m_nDiscoveryTime[m_nReachableAncestor[m_nParent[x]]];
+
+	if(time_x < time_parent)
+		m_nReachableAncestor[m_nParent[x]] = m_nReachableAncestor[x];
 }
 
 void Graph::ProcessDFSEdge(int x, int y)
 {
-	if(GetEdgeType(x,y) == BACK)
+	EdgeType type = GetEdgeType(x,y);
+	#if 0
+	/* check for cycles */
+	if(type == BACK)
 	{
 		std::cout << "Found cycle from " << y << " to " << x << "\n";
 		FindPath(y,x);
 	}
 	std::cout << "Processing edge " << x << " " << y << "\n";
+	#endif
+
+	if(type == TREE)
+		m_OutDegree[x]++;
+
+	if(type == BACK && m_nParent[x] != y )
+	{
+		if(m_nDiscoveryTime[y] < m_nDiscoveryTime[m_nReachableAncestor[x]])
+			m_nReachableAncestor[x] = y;
+	}
 }
 
 void Graph::FindPath(int x, int y)
