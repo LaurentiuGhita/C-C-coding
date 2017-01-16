@@ -149,6 +149,7 @@ void Graph::ProcessDFSVertexLate(int x, int nTime)
 	int time_x; // earliest reachable time for x
 	int time_parent; // earliest reachable time for parent[x]
 
+	m_topologicalSort.push(x);
 	// root with more childs
 	if(m_nParent[x] < 1)
 	{
@@ -180,7 +181,6 @@ void Graph::ProcessDFSVertexLate(int x, int nTime)
 void Graph::ProcessDFSEdge(int x, int y)
 {
 	EdgeType type = GetEdgeType(x,y);
-	#if 0
 	/* check for cycles */
 	if(type == BACK)
 	{
@@ -188,7 +188,6 @@ void Graph::ProcessDFSEdge(int x, int y)
 		FindPath(y,x);
 	}
 	std::cout << "Processing edge " << x << " " << y << "\n";
-	#endif
 
 	if(type == TREE)
 		m_OutDegree[x]++;
@@ -354,4 +353,32 @@ bool Graph::IsGraphBipartite()
 
 	if(m_bBipartite == true)
 		std::cout << "Graph is bipartite \n";
+}
+
+void Graph::TopologicalSort()
+{
+	InitSearch();
+	InitStack(m_topologicalSort);
+
+	for(int i = 1 ; i <m_nVertices; i++)
+	{
+		if(m_bDiscovered[i] == false)
+		{
+			DfsTraversal(i);
+		}
+	}
+
+	std::cout << "Topological sort ";
+	while(!m_topologicalSort.empty())
+	{
+		std::cout << m_topologicalSort.top() << " ";
+		m_topologicalSort.pop();
+	}
+	std::cout << "\n";
+}
+
+void Graph::InitStack(std::stack<int>& st)
+{
+	while(!st.empty())
+		st.pop();
 }

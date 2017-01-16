@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <stack>
 
 const int MAX_VERTICES = 1023;
 const int NO_PARENT = -1;
@@ -48,6 +49,8 @@ public:
 	void DfsDiscoverTime();
 	EdgeType GetEdgeType(int x, int y);
 	void FindPath(int x, int y);
+	void TopologicalSort();
+	void InitStack(std::stack<int>& st);
 
 private:
 	int InsertEdge(int x, int y, bool bDirected, int nWeight = 0);
@@ -73,6 +76,7 @@ private:
 	int m_nFinishTime[MAX_VERTICES + 1];
 	COLOR m_color[MAX_VERTICES + 1];
 	EdgeNode* m_Edges[MAX_VERTICES + 1];
+	std::stack<int> m_topologicalSort;
 };
 
 #endif

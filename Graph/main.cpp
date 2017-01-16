@@ -11,6 +11,7 @@ int main()
 	//myGraph.ShortestPath(1,7);
 	//myGraph.ConectedComponents();
 	//myGraph.IsGraphBipartite();
-	myGraph.DfsTraversal(1);
+	//myGraph.DfsTraversal(1);
 	//myGraph.DfsDiscoverTime();
+	myGraph.TopologicalSort();
 }
