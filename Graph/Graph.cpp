@@ -93,11 +93,13 @@ void Graph::PrintGraph()
 		if(aux != NULL)
 		{
 			bEmpty = false;
-			std::cout << "Node " << i << ": ";
+			std::cout << "Node " << i << ": \n";
 		}
 		while(aux != NULL)
 		{
-			std::cout << aux->m_y << " ";
+			std::cout << "   Edge to " << aux->m_y;
+			if(m_bWeights)
+				std::cout << " with weight " << aux->m_nWeight << "\n";
 			aux = aux->m_pNext;
 		}
 
@@ -382,3 +384,67 @@ void Graph::InitStack(std::stack<int>& st)
 	while(!st.empty())
 		st.pop();
 }
+
+void Graph::PrimAlgorithm(int nStartIndex)
+{
+	InitSearch(); // not all ops from init necessary 
+
+	EdgeNode* aux;
+	std::vector<bool> bIntreeVector(MAX_VERTICES, false); // is the vertex in the tree yet
+	std::vector<int> nDistanceVector(MAX_VERTICES, INIFITE); // distance from startIndex 
+
+	int weight; // edge weight;
+	int index;
+	int v; // current vertex to process
+	int w;
+	int minDist = INIFITE; // current minimum distance
+
+	nDistanceVector[nStartIndex] = 0;
+
+	v = nStartIndex;
+	while(bIntreeVector[v] == false)
+	{
+
+		bIntreeVector[v] = true; // add node to tree
+
+		// go through all new edges and update distance from nStart to w if necessary
+		aux = m_Edges[v];
+		while(aux != NULL)
+		{
+			// end vertex of edge
+			w = aux->m_y;
+			weight = aux->m_nWeight;
+
+			// we found a shoter path from v to w and w is not in current tree
+			if(nDistanceVector[w] > weight && bIntreeVector[w] == false)
+			{
+				nDistanceVector[w] = weight; // update distance 
+				m_nParent[w] = v; // and parent
+			}
+
+			aux = aux->m_pNext;
+
+		}
+
+		minDist = INIFITE;
+		bool bAddedVertex = false;
+		// go through all vertices
+		for(int i = 1; i <= m_nVertices; ++i)
+		{
+			// i not in tree
+			if(bIntreeVector[i] == false && minDist > nDistanceVector[i])
+			{
+				minDist = nDistanceVector[i];
+				v = i;
+				bAddedVertex = true;
+			}
+		}
+
+		if(bAddedVertex)
+			std::cout << "Going to node " << v << " path cost " << minDist << " from " << m_nParent[v] << "\n"; 
+	}
+}
+
+
+
+

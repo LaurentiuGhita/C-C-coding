@@ -7,6 +7,7 @@
 
 const int MAX_VERTICES = 1023;
 const int NO_PARENT = -1;
+const int INIFITE = 99999;
 
 enum COLOR
 {
@@ -51,6 +52,7 @@ public:
 	void FindPath(int x, int y);
 	void TopologicalSort();
 	void InitStack(std::stack<int>& st);
+	void PrimAlgorithm(int nStartIndex);
 
 private:
 	int InsertEdge(int x, int y, bool bDirected, int nWeight = 0);

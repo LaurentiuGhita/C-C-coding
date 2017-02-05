@@ -6,6 +6,7 @@ int main()
 	Graph myGraph;
 	std::ifstream fin("input1");
 	myGraph.ReadGraph(fin);
+	myGraph.PrimAlgorithm(1);
 	//myGraph.PrintGraph();
 	//myGraph.BfsTraversal(1);
 	//myGraph.ShortestPath(1,7);
@@ -13,5 +14,5 @@ int main()
 	//myGraph.IsGraphBipartite();
 	//myGraph.DfsTraversal(1);
 	//myGraph.DfsDiscoverTime();
-	myGraph.TopologicalSort();
+	//myGraph.TopologicalSort();
 }
