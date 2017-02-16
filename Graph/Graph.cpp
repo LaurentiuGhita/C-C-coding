@@ -428,6 +428,7 @@ void Graph::PrimAlgorithm(int nStartIndex)
 
 		minDist = INIFITE;
 		bool bAddedVertex = false;
+
 		// go through all vertices
 		for(int i = 1; i <= m_nVertices; ++i)
 		{
@@ -442,6 +443,67 @@ void Graph::PrimAlgorithm(int nStartIndex)
 
 		if(bAddedVertex)
 			std::cout << "Going to node " << v << " path cost " << minDist << " from " << m_nParent[v] << "\n"; 
+	}
+}
+
+void Graph::DijkstraAlgorithm(int nStartIndex)
+{
+	InitSearch(); // not all ops from init necessary 
+
+	EdgeNode* aux;
+	std::vector<bool> bIntreeVector(MAX_VERTICES, false); // is the vertex in the tree yet
+	std::vector<int> nDistanceVector(MAX_VERTICES, INIFITE); // distance from startIndex 
+
+	int weight; // edge weight;
+	int index;
+	int v; // current vertex to process
+	int w;
+	int minDist = INIFITE; // current minimum distance
+
+	nDistanceVector[nStartIndex] = 0;
+
+	v = nStartIndex;
+	while(bIntreeVector[v] == false)
+	{
+		std::cout << "Analizing edges from node " << v << "\n";
+		bIntreeVector[v] = true; // add node to tree
+
+		// go through all new edges
+		aux = m_Edges[v];
+		while(aux != NULL)
+		{
+			// end vertex of edge
+			w = aux->m_y;
+			weight = aux->m_nWeight;
+
+			// compute current distance to W from v through this edge and updte if smaller
+			if(nDistanceVector[w] > nDistanceVector[v] + weight)
+			{
+
+				nDistanceVector[w] = nDistanceVector[v] + weight; // update distance 
+				m_nParent[w] = v; // and parent
+				std::cout << "\tFound a better way to " << w << " new parent " << v << " and distance " << nDistanceVector[w] << "\n";
+			}
+
+			aux = aux->m_pNext;
+
+		}
+
+		minDist = INIFITE;
+		bool bAddedVertex = false;
+		
+		// go through all vertices -- and add minimum distance
+		for(int i = 1; i <= m_nVertices; ++i)
+		{
+			// i not in tree 
+			if(bIntreeVector[i] == false && minDist > nDistanceVector[i])
+			{
+				minDist = nDistanceVector[i];
+				v = i;
+				bAddedVertex = true;
+				std::cout << "Added node " << i << " --> ";
+			}
+		}
 	}
 }
 

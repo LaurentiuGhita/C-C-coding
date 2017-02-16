@@ -52,7 +52,8 @@ public:
 	void FindPath(int x, int y);
 	void TopologicalSort();
 	void InitStack(std::stack<int>& st);
-	void PrimAlgorithm(int nStartIndex);
+	void PrimAlgorithm(int nStartIndex); // for minimum spaning tree
+	void DijkstraAlgorithm(int nStartIndex); // shortest path
 
 private:
 	int InsertEdge(int x, int y, bool bDirected, int nWeight = 0);
