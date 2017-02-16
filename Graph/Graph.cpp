@@ -446,6 +446,9 @@ void Graph::PrimAlgorithm(int nStartIndex)
 	}
 }
 
+
+// O(n^2)
+// O(m log n) --> is using heaps instead of distance vector --> sparse graphs --> numar de laturi liniar cu nr de noduri
 void Graph::DijkstraAlgorithm(int nStartIndex)
 {
 	InitSearch(); // not all ops from init necessary 
@@ -468,7 +471,7 @@ void Graph::DijkstraAlgorithm(int nStartIndex)
 		std::cout << "Analizing edges from node " << v << "\n";
 		bIntreeVector[v] = true; // add node to tree
 
-		// go through all new edges
+		// go through all new edges --> O(m) complexity and if adding to heap --> O(m log n) 
 		aux = m_Edges[v];
 		while(aux != NULL)
 		{
@@ -479,7 +482,7 @@ void Graph::DijkstraAlgorithm(int nStartIndex)
 			// compute current distance to W from v through this edge and updte if smaller
 			if(nDistanceVector[w] > nDistanceVector[v] + weight)
 			{
-
+				// better algorithm --> use heap instead of distance vector ( add it to heap ) 
 				nDistanceVector[w] = nDistanceVector[v] + weight; // update distance 
 				m_nParent[w] = v; // and parent
 				std::cout << "\tFound a better way to " << w << " new parent " << v << " and distance " << nDistanceVector[w] << "\n";
@@ -489,9 +492,10 @@ void Graph::DijkstraAlgorithm(int nStartIndex)
 
 		}
 
-		minDist = INIFITE;
+		minDist = INIFITE;ho
 		bool bAddedVertex = false;
 		
+		// if using heap just get the minimum --> O(log n) --> complexity 
 		// go through all vertices -- and add minimum distance
 		for(int i = 1; i <= m_nVertices; ++i)
 		{
