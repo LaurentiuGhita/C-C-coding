@@ -22,6 +22,7 @@ struct BacktrackingRoutines
 };
 
 
+template <typename T>
 class BacktrackProblem
 {
 public:
@@ -34,7 +35,7 @@ public:
 	void SetUnMakeMoveRoutine(UnMakeMoveFP fp) { m_routines.UnMakeMove = fp;}
 	void SetBacktrackRoutine(BacktrackFP fp) { m_routines.Backtrack = fp; }
 
-	void BacktrackAlgorithm(int*&a , int k, int input);
+	void BacktrackAlgorithm(int*&a , int k, T input);
 	//void Solve(int*&a , int k, T input) { BacktrackAlgorithm<T>(a, k, input); }
 	
 
