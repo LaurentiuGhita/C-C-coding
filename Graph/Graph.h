@@ -53,7 +53,7 @@ public:
 	void TopologicalSort();
 	void InitStack(std::stack<int>& st);
 	void PrimAlgorithm(int nStartIndex); // for minimum spaning tree
-	void DijkstraAlgorithm(int nStartIndex); // shortest path
+	void DijkstraAlgorithm(int nStartIndex); // shortest path --> mlg n performance using a heap instead of a distance vector
 
 private:
 	int InsertEdge(int x, int y, bool bDirected, int nWeight = 0);
