@@ -4,9 +4,10 @@
 int main()
 {
 	Graph myGraph;
-	std::ifstream fin("input2");
+	std::ifstream fin("input1");
 	myGraph.ReadGraph(fin);
-	myGraph.DijkstraAlgorithm(1);
+	myGraph.ConstructAllPaths(1, 7);
+	//myGraph.DijkstraAlgorithm(1);
 	//myGraph.PrimAlgorithm(1);
 	//myGraph.PrintGraph();
 	//myGraph.BfsTraversal(1);

@@ -54,6 +54,7 @@ public:
 	void InitStack(std::stack<int>& st);
 	void PrimAlgorithm(int nStartIndex); // for minimum spaning tree
 	void DijkstraAlgorithm(int nStartIndex); // shortest path --> mlg n performance using a heap instead of a distance vector
+	void ConstructAllPaths(int nStartNode, int nEndNode);
 
 private:
 	int InsertEdge(int x, int y, bool bDirected, int nWeight = 0);
@@ -64,6 +65,8 @@ private:
 	void ProcessDFSVertexEarly(int x, int nTime); 
 	void ProcessDFSVertexLate(int x, int nTime);
 	void ProcessDFSEdge(int x, int y);
+	void ConstructCandidate(int*&a, int k, int n, int*& candidates, int& nCandidates);
+	void backtrack(int*& a, int k, int n); 
 
 	bool m_bProcessed[MAX_VERTICES + 1];
 	bool m_bDiscovered[MAX_VERTICES + 1];

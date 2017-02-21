@@ -492,7 +492,7 @@ void Graph::DijkstraAlgorithm(int nStartIndex)
 
 		}
 
-		minDist = INIFITE;ho
+		minDist = INIFITE;
 		bool bAddedVertex = false;
 		
 		// if using heap just get the minimum --> O(log n) --> complexity 
@@ -511,6 +511,85 @@ void Graph::DijkstraAlgorithm(int nStartIndex)
 	}
 }
 
+
+
+void ProcessSolution(int*&a, int k, int n)
+{
+	std::cout << "Path: ";
+	for(int i = 1; i <= k; ++i)
+	{
+		if(i != k)
+			std::cout << a[i] << ", ";
+		else
+			std::cout << a[i] << "\n";
+	}
+}
+
+// n is the final vertex
+bool IsASolution(int*&a, int k, int n)
+{
+	return a[k] == n;
+}
+
+void Graph::ConstructCandidate(int*&a, int k, int n, int*& candidates, int& nCandidates)
+{
+	int nMAX_VERTICES = 100;
+	bool bInVertices[100] = { false };
+
+	for(int i = 1; i < k; i++ )
+	{
+		if(a[i])
+			bInVertices[a[i]] = true;
+	}
+
+	nCandidates = 0;
+	// get lat node in current path
+	EdgeNode* aux = m_Edges[a[k-1]];
+	while(aux != NULL)
+	{
+		int y = aux->m_y;
+		if(bInVertices[y] == false)
+		{
+			candidates[nCandidates] = y;
+			nCandidates++;
+		}
+		aux = aux->m_pNext;
+	}
+}
+
+void Graph::ConstructAllPaths(int nStartIndex, int nNodeIndex)
+{
+	int* a = new int[m_nVertices]();
+	a[1] = nStartIndex;
+
+	backtrack(a, 1, nNodeIndex);
+
+	delete []a;
+}
+
+void Graph::backtrack(int*& a, int k, int n)
+{
+	const int MAX_CANDIDATES = 100;
+	int* candidates = new int[MAX_CANDIDATES];
+	int nCandidates = 0;
+
+	if(IsASolution(a, k, n))
+	{
+		ProcessSolution(a, k, n);
+	}
+	else
+	{
+		k++;
+		ConstructCandidate(a, k, n, candidates, nCandidates);
+		for(int i = 0; i < nCandidates; i++)
+		{
+			a[k] = candidates[i];
+			backtrack(a, k, n);	
+		}
+	}
+
+	delete []candidates;
+}
 
 
 
