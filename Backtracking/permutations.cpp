@@ -45,7 +45,7 @@ bool IsASolution(int*& a, int k, int n)
 
 void backtrack(int*& a, int k, int n)
 {
-	int* canditates = new int[100]();
+	int* canditates = new int[100];
 	int ncandidates = 0;
 
 	if(IsASolution(a,k,n))
