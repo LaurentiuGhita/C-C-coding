@@ -3,7 +3,16 @@
 
 void rotateMatrix90(int** matrix, int dim)
 {
-    matrix[0][0] = 100;
+    int slices  = dim / 2;
+
+    int layer = 0;
+
+    for(layer = 0; layer < slices; ++layer)
+    {
+        int first = layer;
+        int last = dim - layer -1;
+    }
+
 }
 
 void printMatrix(int** matrix, int dim)
