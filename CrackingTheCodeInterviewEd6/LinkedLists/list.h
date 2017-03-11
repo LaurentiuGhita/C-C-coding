@@ -12,4 +12,7 @@ typedef struct Node
 void AddToList(Node** pHead, int nElement);
 bool DeleteFromList(Node** pHead, int nElement);
 void PrintList(Node* pHead);
+void PrintReverseList(Node* pHead);
 void ReadList(Node** pHead);
+int  ListLength(Node* pHead);
+void FreeList(Node** pHead);

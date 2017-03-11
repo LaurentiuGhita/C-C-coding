@@ -38,4 +38,5 @@ int main()
 	printf("Select k-th from end "); scanf("%d", &k);
 	printf("K-th element from last = %d\n", KthToLastElement(pList, k));
 
+	FreeList(&pList);
 }

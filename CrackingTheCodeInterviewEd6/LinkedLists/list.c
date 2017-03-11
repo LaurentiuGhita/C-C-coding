@@ -5,12 +5,12 @@ void AddToList(Node** pHead, int nElement)
 {
 	Node* currentHead = *pHead;
 
-	Node* newNode = malloc(sizeof(Node)); 
-	newNode->m_pNext = NULL;
-	newNode->m_nVal = nElement;
-
 	if(currentHead == NULL)
 	{
+		Node* newNode = malloc(sizeof(Node)); 
+		newNode->m_pNext = NULL;
+		newNode->m_nVal = nElement;
+
 		*pHead = newNode;
 	}
 	else
@@ -60,6 +60,14 @@ void PrintList(Node* pHead)
 	printf("\n");
 }
 
+void PrintReverseList(Node* pHead)
+{
+	if(pHead)
+	{
+		PrintReverseList(pHead->m_pNext);
+		printf("%d ", pHead->m_nVal);
+	}	
+}
 
 void ReadList(Node** pHead)
 {
@@ -73,5 +81,34 @@ void ReadList(Node** pHead)
 		int aux;
 		scanf("%d", &aux);
 		AddToList(pHead, aux);
+	}
+}
+
+int ListLength(Node* pHead)
+{
+	int count = 0;
+	if(pHead)
+	{
+		while(pHead)
+		{
+			pHead = pHead->m_pNext;
+			++count;
+		}
+	}
+	return count;
+}
+
+void FreeList(Node** pHead)
+{
+	if(pHead && *pHead)
+	{
+		Node* pCurrentHead = *pHead;
+
+		while(pCurrentHead)
+		{
+			Node* pToDelete = pCurrentHead;
+			pCurrentHead = pCurrentHead->m_pNext;
+			free(pToDelete);
+		}
 	}
 }
