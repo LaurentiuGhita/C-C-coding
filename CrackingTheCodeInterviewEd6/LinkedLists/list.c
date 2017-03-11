@@ -37,6 +37,7 @@ bool DeleteFromList(Node** pHead, int nElement)
 				{
 					pCurrentHead->m_pNext = pNext->m_pNext;
 					free(pNext);
+ 
 					*pHead = pCurrentHead;
 				}
 				else
@@ -63,6 +64,7 @@ void PrintList(Node* pHead)
 void PrintReverseList(Node* pHead)
 {
 	if(pHead)
+ 
 	{
 		PrintReverseList(pHead->m_pNext);
 		printf("%d ", pHead->m_nVal);
@@ -111,4 +113,23 @@ void FreeList(Node** pHead)
 			free(pToDelete);
 		}
 	}
+}
+
+Node* GetTail(Node* pHead, int* nLength)
+{
+	*nLength = 0;
+	if(!pHead)
+	{
+		*nLength = 0;
+		return NULL;
+	}
+
+	*nLength = 1;
+	while(pHead->m_pNext != NULL)
+	{
+		*nLength = *nLength + 1;
+		pHead = pHead->m_pNext;
+	}
+
+	return pHead;
 }

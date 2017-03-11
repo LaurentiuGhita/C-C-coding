@@ -16,3 +16,4 @@ void PrintReverseList(Node* pHead);
 void ReadList(Node** pHead);
 int  ListLength(Node* pHead);
 void FreeList(Node** pHead);
+Node* GetTail(Node* pHead, int* nLength);
