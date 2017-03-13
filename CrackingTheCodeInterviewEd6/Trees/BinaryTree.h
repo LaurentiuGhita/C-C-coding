@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 const int NOT_SET = -1000;
 
@@ -16,3 +17,6 @@ void Insert(Node** pRoot, int nVal);
 void TraverseInOrder(Node* pRoot);
 void TraversePreOrder(Node* pRoot);
 void TraversePostOrder(Node* pRoot);
+int CheckHeight(Node* pRoot);
+int GetHeight(Node* pRoot);
+bool IsBalanced(Node* pRoot);
