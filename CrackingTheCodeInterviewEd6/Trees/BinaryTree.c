@@ -115,6 +115,11 @@ bool IsBalanced(Node* pRoot)
 	}
 }
 
+bool CheckIfBinarySearchTree(Node* pRoot)
+{
+	
+}
+
 int main()
 {
 	Node *pRoot = NULL;
