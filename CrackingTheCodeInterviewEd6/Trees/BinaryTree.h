@@ -1,0 +1,18 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+const int NOT_SET = -1000;
+
+struct Node 
+{
+	int m_nVal;
+	struct Node* m_pLeftChild;
+	struct Node* m_pRightChild;
+} Node_Default = { -999, NULL, NULL} ;
+
+typedef struct Node Node;
+
+void Insert(Node** pRoot, int nVal);
+void TraverseInOrder(Node* pRoot);
+void TraversePreOrder(Node* pRoot);
+void TraversePostOrder(Node* pRoot);
