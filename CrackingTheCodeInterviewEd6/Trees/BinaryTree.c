@@ -1,6 +1,7 @@
 #include "BinaryTree.h"
 
 const int INTEGER_MIN = -9999;
+const int INTEGER_MAX = 9999;
 
 int max(int a, int b)
 {
@@ -115,9 +116,26 @@ bool IsBalanced(Node* pRoot)
 	}
 }
 
-bool CheckIfBinarySearchTree(Node* pRoot)
+bool CheckIfBinarySearchTree(Node* pRoot, int min , int max, bool bRoot)
 {
+
+	if(pRoot == NULL)
+		return true;
+
+	if(pRoot->m_nVal > max || pRoot->m_nVal < min)
+		return false;
+
+
+	int bLeft = CheckIfBinarySearchTree(pRoot->m_pLeftChild, INTEGER_MIN, pRoot->m_nVal, false);
 	
+	if(!bLeft)
+		return false;
+
+	bool bRight = CheckIfBinarySearchTree(pRoot->m_pRightChild, pRoot->m_nVal, INTEGER_MAX, false);
+	if(!bRight)
+		return false;
+
+	return true;
 }
 
 int main()
@@ -128,11 +146,18 @@ int main()
 	Insert(&pRoot, 1);
 	Insert(&pRoot, 3);
 
-	IsBalanced(pRoot);
+	Node* pNew = malloc(sizeof(Node));
+	pNew->m_nVal = 100;
+	pNew->m_pRightChild = NULL;
+	pNew->m_pLeftChild = NULL;
 
-	Insert(&pRoot, 4);
-	//Insert(&pRoot, 5);
-	IsBalanced(pRoot);
+	//pRoot->m_pLeftChild->m_pRightChild = pNew;
+
+	bool bIsBST = CheckIfBinarySearchTree(pRoot, INTEGER_MIN, INTEGER_MAX, true);
+	if(bIsBST)
+		printf("Is binary saerch tree\n");
+	else
+		printf("Not a binary tree\n");
 
 }
 

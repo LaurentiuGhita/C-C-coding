@@ -20,4 +20,4 @@ void TraversePostOrder(Node* pRoot);
 int CheckHeight(Node* pRoot);
 int GetHeight(Node* pRoot);
 bool IsBalanced(Node* pRoot);
-bool CheckIfBinarySearchTree(Node* pRoot);
+bool CheckIfBinarySearchTree(Node* pRoot, int min , int max, bool bRoot);
