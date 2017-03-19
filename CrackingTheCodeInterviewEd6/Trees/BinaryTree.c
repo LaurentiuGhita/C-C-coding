@@ -20,17 +20,38 @@ void Insert(Node** pRoot, int nVal)
 		(*pRoot)->m_nVal = nVal;
 		(*pRoot)->m_pRightChild = NULL;
 		(*pRoot)->m_pLeftChild = NULL;
+		(*pRoot)->m_pParent = NULL;
 	}
 	else
 	{
 		if(nVal <= (*pRoot)->m_nVal)
 		{
-			Insert(&(*pRoot)->m_pLeftChild, nVal);
+			if((*pRoot)->m_pLeftChild == NULL)
+			{
+				Node* pnew = malloc(sizeof(Node));
+				pnew->m_nVal = nVal;
+				pnew->m_pRightChild = NULL;
+				pnew->m_pLeftChild = NULL;
+				pnew->m_pParent = *pRoot;
+				(*pRoot)->m_pLeftChild = pnew;	
+			}
+			else	
+				Insert(&(*pRoot)->m_pLeftChild, nVal);
 
 		}
 		else
 		{
-			Insert(&(*pRoot)->m_pRightChild, nVal);
+			if((*pRoot)->m_pRightChild == NULL)
+			{
+				Node* pnew = malloc(sizeof(Node));
+				pnew->m_nVal = nVal;
+				pnew->m_pRightChild = NULL;
+				pnew->m_pLeftChild = NULL;
+				pnew->m_pParent = *pRoot;
+				(*pRoot)->m_pRightChild = pnew;
+			}
+			else
+				Insert(&(*pRoot)->m_pRightChild, nVal);
 		}
 	}
 }
@@ -125,7 +146,6 @@ bool CheckIfBinarySearchTree(Node* pRoot, int min , int max, bool bRoot)
 	if(pRoot->m_nVal > max || pRoot->m_nVal < min)
 		return false;
 
-
 	int bLeft = CheckIfBinarySearchTree(pRoot->m_pLeftChild, INTEGER_MIN, pRoot->m_nVal, false);
 	
 	if(!bLeft)
@@ -138,13 +158,59 @@ bool CheckIfBinarySearchTree(Node* pRoot, int min , int max, bool bRoot)
 	return true;
 }
 
+
+int IsLeftChild(Node* pParent, Node* pChild)
+{
+	if(!pParent || !pChild)
+		return -1;
+
+	int nChildVal = pChild->m_nVal;
+	int nParentVal = pParent->m_nVal;
+
+	if(nChildVal <= nParentVal)
+		return 1;
+	else
+		return 0;
+}
+
+int GetSuccessor(Node* pNode)
+{
+	if(pNode->m_pRightChild)
+	{
+		printf("Successor %d \n", pNode->m_pRightChild->m_nVal);
+		return pNode->m_pRightChild->m_nVal;
+	}
+
+	Node* pParent = pNode->m_pParent;
+	Node* pCurrent = pNode;
+
+	int nRet = IsLeftChild(pParent, pCurrent); 
+	while( nRet == 0)
+	{
+		pCurrent = pParent;
+		pParent = pParent->m_pParent;
+		nRet = IsLeftChild(pParent, pCurrent); 
+	}
+	
+	if(nRet == -1)
+	{
+		printf("Node has no successor\n");
+		return -1;
+	}
+	else
+	{
+		printf("Successor %d \n", pParent->m_nVal);
+	}
+}
+
 int main()
 {
 	Node *pRoot = NULL;
 
-	Insert(&pRoot, 2);
-	Insert(&pRoot, 1);
 	Insert(&pRoot, 3);
+	Insert(&pRoot, 1);
+	Insert(&pRoot, 4);
+	Insert(&pRoot, 2);
 
 	Node* pNew = malloc(sizeof(Node));
 	pNew->m_nVal = 100;
@@ -159,5 +225,5 @@ int main()
 	else
 		printf("Not a binary tree\n");
 
+	GetSuccessor(pRoot->m_pLeftChild->m_pRightChild);
 }
-

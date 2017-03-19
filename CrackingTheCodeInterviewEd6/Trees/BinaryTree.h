@@ -7,9 +7,10 @@ const int NOT_SET = -1000;
 struct Node 
 {
 	int m_nVal;
+	struct Node* m_pParent;
 	struct Node* m_pLeftChild;
 	struct Node* m_pRightChild;
-} Node_Default = { -999, NULL, NULL} ;
+} Node_Default = { -999, NULL, NULL, NULL} ;
 
 typedef struct Node Node;
 
@@ -21,3 +22,5 @@ int CheckHeight(Node* pRoot);
 int GetHeight(Node* pRoot);
 bool IsBalanced(Node* pRoot);
 bool CheckIfBinarySearchTree(Node* pRoot, int min , int max, bool bRoot);
+int GetSuccessor(Node* pNode);
+int IsLeftChild(Node* pParent, Node* pChild);
