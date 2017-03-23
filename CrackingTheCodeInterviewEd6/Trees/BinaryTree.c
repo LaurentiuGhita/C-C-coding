@@ -203,6 +203,47 @@ int GetSuccessor(Node* pNode)
 	}
 }
 
+bool Covers(Node* pRoot, Node* pChild)
+{
+	if(pRoot == NULL)
+		return false;
+
+	if(pRoot == pChild)
+		return true;
+
+	return Covers(pRoot->m_pLeftChild) || Covers(pRoot->m_pRightChild);
+}
+
+Node* FindCommonAncestor(Node* pRoot, Node* p, Node* q)
+{
+	if(pRoot == NULL)
+		return NULL;
+
+	if(pRoot == p && pRoot == q)
+		return pRoot;
+
+	Node* x = FindCommonAncestor(pRoot->m_pLeftChild, p, q);
+	
+	// already found ancestor
+	if(x != NULL && x != p && x != q)
+		return x;
+
+	Node* y = FindCommonAncestor(pRoot->m_pRightChild, p, q);
+	if(y != NULL && y != p && y != q)
+		return y;
+
+	if(x != NULL && y != NULL)
+		return pRoot;
+	else if(pRoot == p || pRoot == q)
+			return pRoot;
+	else
+	{
+		if(x == NULL)
+			return y;
+		else return x;
+	}
+}
+
 int main()
 {
 	Node *pRoot = NULL;

@@ -24,3 +24,5 @@ bool IsBalanced(Node* pRoot);
 bool CheckIfBinarySearchTree(Node* pRoot, int min , int max, bool bRoot);
 int GetSuccessor(Node* pNode);
 int IsLeftChild(Node* pParent, Node* pChild);
+bool Covers(Node* pRoot, Node* pChild);
+Node* FindCommonAncestor(Node* pRoot, Node* p, Node* q);
