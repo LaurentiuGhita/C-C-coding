@@ -247,6 +247,39 @@ Node* FindCommonAncestor(Node* pRoot, Node* p, Node* q)
 	}
 }
 
+bool MatchSubTree(Node* pRoot, Node* pTree)
+{
+	/* reached end with search - no elements left*/
+	if(pRoot == NULL && pTree == NULL)
+		return true;
+	else
+	{
+		if(pRoot == NULL )
+			return false;
+
+		if(pTree == NULL)
+			return true;
+
+		if(pRoot->m_nVal == pTree->m_nVal)
+			return MatchSubTree(pRoot->m_pLeftChild, pTree->m_pLeftChild) && MatchSubTree(pRoot->m_pRightChild, pTree->m_pRightChild);
+
+		return false;
+	}	
+}
+
+bool IsSubTree(Node* pRoot, Node* pTree)
+{
+	if(pRoot == NULL)
+		return false;
+	if(pTree == NULL)
+		return true;
+
+	if(pRoot->m_nVal == pTree->m_nVal)
+		return MatchSubTree(pRoot, pTree);
+
+	return MatchSubTree(pRoot->m_pLeftChild, pTree) || MatchSubTree(pRoot->m_pRightChild, pTree);
+}
+
 int main()
 {
 	Node *pRoot = NULL;
@@ -259,8 +292,23 @@ int main()
 	Insert(&pRoot, 6);
 	Insert(&pRoot, 3);
 
+	Node* pTree = NULL;
+	Insert(&pTree, 10);
+	Insert(&pTree, 8);
+	Insert(&pTree, 11);
+	Insert(&pTree, 12);
+
+	bool bIsSubTree = IsSubTree(pRoot, pTree);
+	if(bIsSubTree)
+		printf("Is subtree \n");
+	else
+		printf("Not substree \n");
+
+/*
+	// find common ancestor
 	Node* pCommon = FindCommonAncestor(pRoot, pRoot->m_pLeftChild->m_pLeftChild, pRoot->m_pLeftChild->m_pRightChild);
 	printf("Ancestor value = %d\n", pCommon->m_nVal);
+*/
 #if 0
 	//pRoot->m_pLeftChild->m_pRightChild = pNew;
 

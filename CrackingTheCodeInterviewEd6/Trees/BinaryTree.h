@@ -26,3 +26,5 @@ int GetSuccessor(Node* pNode);
 int IsLeftChild(Node* pParent, Node* pChild);
 bool Covers(Node* pRoot, Node* pChild);
 Node* FindCommonAncestor(Node* pRoot, Node* p, Node* q);
+bool MatchSubTree(Node* pRoot, Node* pTree);
+
