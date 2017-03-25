@@ -211,9 +211,12 @@ bool Covers(Node* pRoot, Node* pChild)
 	if(pRoot == pChild)
 		return true;
 
-	return Covers(pRoot->m_pLeftChild) || Covers(pRoot->m_pRightChild);
+	return Covers(pRoot->m_pLeftChild, pChild) || Covers(pRoot->m_pRightChild, pChild);
 }
 
+/* this will not work if p or q is are not present in tree 
+ * additional info (a flag when found ) must be passed to know when ancestor was reached
+*/
 Node* FindCommonAncestor(Node* pRoot, Node* p, Node* q)
 {
 	if(pRoot == NULL)
@@ -248,16 +251,17 @@ int main()
 {
 	Node *pRoot = NULL;
 
+	Insert(&pRoot, 7);
+	Insert(&pRoot, 10);
+	Insert(&pRoot, 8);
+	Insert(&pRoot, 11);
+	Insert(&pRoot, 5);
+	Insert(&pRoot, 6);
 	Insert(&pRoot, 3);
-	Insert(&pRoot, 1);
-	Insert(&pRoot, 4);
-	Insert(&pRoot, 2);
 
-	Node* pNew = malloc(sizeof(Node));
-	pNew->m_nVal = 100;
-	pNew->m_pRightChild = NULL;
-	pNew->m_pLeftChild = NULL;
-
+	Node* pCommon = FindCommonAncestor(pRoot, pRoot->m_pLeftChild->m_pLeftChild, pRoot->m_pLeftChild->m_pRightChild);
+	printf("Ancestor value = %d\n", pCommon->m_nVal);
+#if 0
 	//pRoot->m_pLeftChild->m_pRightChild = pNew;
 
 	bool bIsBST = CheckIfBinarySearchTree(pRoot, INTEGER_MIN, INTEGER_MAX, true);
@@ -267,4 +271,7 @@ int main()
 		printf("Not a binary tree\n");
 
 	GetSuccessor(pRoot->m_pLeftChild->m_pRightChild);
+#endif 
+
+
 }
