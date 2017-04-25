@@ -182,6 +182,8 @@ bool isProperlyNested(char* str)
     int i = 0;
     Stack* myStack = NULL;
     initStack(&myStack);
+    bool bProperly = true;
+
     for(i = 0; i < strlen(str); ++i)
     {
         if(isOpeningBracket(str[i]))
@@ -191,23 +193,39 @@ bool isProperlyNested(char* str)
         else if(isClosingBracket(str[i]))
         {
             if(isEmpty(myStack))
-                return false;
+            {
+                bProperly = false;
+                break;
+            }
             else
             {
                 char chTop = top(myStack);
                 char matching = getMatchingBracket(chTop);
                 if(matching == str[i])
-                    popStack(&myStack); 
+                    popStack(&myStack);
+                else
+                {
+                    bProperly = false;
+                    break;
+                }
             }
 
         }
     }
-    return true;
+
+    if(!isEmpty(myStack))
+    {
+        bProperly = false;
+    }
+
+    freeStack(&myStack);
+
+    return bProperly;
 }
 
 int main() {
     
-    char* str = "([)()]";
+    char* str = "((()))(()";
     printf("%d\n", isProperlyNested(str));
     return 0;
     
