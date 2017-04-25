@@ -3,18 +3,14 @@
 
 void AddToList(Node** pHead, int nElement)
 {
-	Node* currentHead = *pHead;
 
-	if(currentHead == NULL)
-	{
-		Node* newNode = malloc(sizeof(Node)); 
-		newNode->m_pNext = NULL;
-		newNode->m_nVal = nElement;
 
-		*pHead = newNode;
-	}
-	else
-		AddToList(&currentHead->m_pNext, nElement);
+    Node* pNewNode = malloc(sizeof(Node));
+    pNewNode->m_nVal = nElement;
+    pNewNode->m_pNext = *pHead;
+
+    *pHead = pNewNode;
+
 }
 
 bool DeleteFromList(Node** pHead, int nElement)

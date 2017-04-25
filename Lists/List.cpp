@@ -20,20 +20,7 @@ List::~List()
 void List::Add(int nVal)
 {
 	Node* newNode = new Node(nVal);
-
-	if(headNode == NULL)
-	{
-		headNode = newNode;
-	}
-	else
-	{
-		Node* aux = headNode;
-		while(aux->pNext != NULL)
-		{
-			aux = aux->pNext;
-		}
-		aux->pNext = newNode;
-	}
+    newNode->pNext = headNode;
 }
 
 void List::Print()
