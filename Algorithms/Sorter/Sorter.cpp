@@ -31,6 +31,7 @@ void Sorter::SelectionSort()
 	std::vector<int> sortedVector;
 	sortedVector = m_unsortedElements;
 
+	// at step i we have the first i elements sorted 
 	for(int i = 0; i < sortedVector.size() - 1; i++)
 	{
 		int minIndex = i;
@@ -41,6 +42,28 @@ void Sorter::SelectionSort()
 		}
 		if(minIndex != i)
 			mySwap(sortedVector[i], sortedVector[minIndex]);
+	}
+
+	printVector(sortedVector);
+}
+
+void Sorter::InsertionSort()
+{
+	std::cout << "InsertionSort ";
+	std::vector<int> sortedVector;
+	sortedVector = m_unsortedElements;
+
+	for(int i = 1; i < sortedVector.size(); ++i)
+	{
+		// what is to the left is sorted --> find where new element must be in the sorted part from left 
+		for(int j = i; j > 0 ; --j)
+		{
+			if(sortedVector[j] > sortedVector[j - 1])
+				break;
+
+
+			mySwap(sortedVector[j], sortedVector[j - 1]);
+		}
 	}
 
 	printVector(sortedVector);
