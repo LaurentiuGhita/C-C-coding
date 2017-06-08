@@ -116,20 +116,25 @@ void AVLTree<T>::AddNodeHelper(T val, AVLNode<T>*& pRoot)
 		if(pRoot->pRight == nullptr)
 		{
 			pRoot->pRight = new AVLNode<T>(val);
-			pRoot = Balance(pRoot);
+			
 		}
 		else
+		{
 			AddNodeHelper(val, pRoot->pRight);
+			pRoot = Balance(pRoot);
+		}
 	}
 	else if(val < pRoot->m_data)
 	{
 		if(pRoot->pLeft == nullptr)
 		{
 			pRoot->pLeft = new AVLNode<T>(val);
-			pRoot = Balance(pRoot);
 		}
 		else
+		{
 			AddNodeHelper(val, pRoot->pLeft);
+			pRoot = Balance(pRoot);
+		}
 	}
 }
 
@@ -139,7 +144,7 @@ AVLNode<T>* AVLTree<T>::GetNodeHelper(T val, AVLNode<T>*& pRoot)
 	if(pRoot != nullptr)
 	{
 		if(pRoot->m_data == val)
-			return m_pRoot;
+			return pRoot;
 		else
 		{
 			if(val > pRoot->m_data)
@@ -243,11 +248,12 @@ AVLNode<T>* AVLTree<T>::Balance(AVLNode<T>*& pRoot)
 	// left subtree has bigger height 
 	if(nDiff > 1)
 	{
+		std::cout << "balancing root node with val" << pRoot->m_data << "\n";
 		temp = pRoot->pLeft;
 		if(GetChildHeightDiff(temp) > 0)
 		{
 			// simple left left
-			pRoot = LeftLeftRotation(pRoot);
+			pRoot = RightRightRotation(pRoot);
 
 		}
 		else
@@ -261,7 +267,7 @@ AVLNode<T>* AVLTree<T>::Balance(AVLNode<T>*& pRoot)
 		if(GetChildHeightDiff(temp) < 0)
 		{
 			// simple right right
-			pRoot = RightRightRotation(pRoot);
+			pRoot = LeftLeftRotation(pRoot);
 		}
 		else
 			pRoot = LeftRightRotation(pRoot);
