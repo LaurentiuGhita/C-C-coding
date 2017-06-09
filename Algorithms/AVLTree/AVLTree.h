@@ -7,8 +7,13 @@
 template <typename T>
 struct AVLNode
 {
-	AVLNode(T val) : m_data(val), pLeft(nullptr), pRight(nullptr){}
+	AVLNode(T val) : m_data(val), m_nHeight(0), pLeft(nullptr), pRight(nullptr){}
+	
+	int Height() { return m_nHeight; }
+	void SetHeight(int val) { m_nHeight = val; }
+
 	T m_data;
+	int m_nHeight;
 	struct AVLNode* pLeft;
 	struct AVLNode* pRight;
 };
@@ -25,6 +30,8 @@ public:
 	AVLNode<T>* GetNode(T val);
 	int GetChildHeightDiff(const AVLNode<T>*& pRoot);
 
+	void AdjustHeight(AVLNode<T>*& pRoot);
+
 	AVLNode<T>* LeftLeftRotation(AVLNode<T>*& pRoot);
 	AVLNode<T>* RightRightRotation(AVLNode<T>*& pRoot);
 	AVLNode<T>* RightLeftRotation(AVLNode<T>*& pRoot);
@@ -33,7 +40,7 @@ public:
 
 private:
 	void PrintInOrderHelper(const AVLNode<T>* pRoot);
-	void AddNodeHelper(T val, AVLNode<T>*& pRoot);
+	AVLNode<T>* AddNodeHelper(T val, AVLNode<T>*& pRoot);
 
 	AVLNode<T>* GetNodeHelper(T val, AVLNode<T>*& pRoot);
 
@@ -86,11 +93,30 @@ int AVLTree<T>::GetChildHeightDiff(const AVLNode<T>*& pRoot)
 	if(pRoot == nullptr)
 		return 0;
 
-	int nLeftHeight = GetHeight(pRoot->pLeft);
-	int nRightHeight = GetHeight(pRoot->pRight);
+	int nLeftHeight = 0;
+	int nRightHeight = 0;
+	if(pRoot->pRight)
+		nRightHeight = pRoot->pRight->Height();
+
+	if(pRoot->pLeft)
+		nLeftHeight = pRoot->pLeft->Height();
 
 	return nLeftHeight - nRightHeight;
+}
 
+template <typename T>
+void AVLTree<T>::AdjustHeight(AVLNode<T>*& pRoot)
+{
+	int nLeftHeight = 0;
+	int nRightHeight = 0;
+	
+	if(pRoot->pLeft)
+		nLeftHeight = pRoot->pLeft->Height();
+
+	if(pRoot->pRight)
+		nRightHeight = pRoot->pRight->Height();
+
+	pRoot->SetHeight(std::max(nLeftHeight, nRightHeight) + 1);
 }
 
 template <typename T>
@@ -105,37 +131,22 @@ void AVLTree<T>::PrintInOrderHelper(const AVLNode<T>* pRoot)
 }
 
 template <typename T>
-void AVLTree<T>::AddNodeHelper(T val, AVLNode<T>*& pRoot)
+AVLNode<T>* AVLTree<T>::AddNodeHelper(T val, AVLNode<T>*& pRoot)
 {
 	if(pRoot == nullptr)
-		return;
+		return new AVLNode<T>(val);
 
-	// add as left child
 	if(val > pRoot->m_data)
 	{
-		if(pRoot->pRight == nullptr)
-		{
-			pRoot->pRight = new AVLNode<T>(val);
-			
-		}
-		else
-		{
-			AddNodeHelper(val, pRoot->pRight);
-			pRoot = Balance(pRoot);
-		}
+		pRoot->pRight = AddNodeHelper(val, pRoot->pRight);
 	}
-	else if(val < pRoot->m_data)
+	else
 	{
-		if(pRoot->pLeft == nullptr)
-		{
-			pRoot->pLeft = new AVLNode<T>(val);
-		}
-		else
-		{
-			AddNodeHelper(val, pRoot->pLeft);
-			pRoot = Balance(pRoot);
-		}
+		pRoot->pLeft = AddNodeHelper(val, pRoot->pLeft);
 	}
+
+	AdjustHeight(pRoot);
+	Balance(pRoot);
 }
 
 template <typename T>
@@ -242,7 +253,7 @@ AVLNode<T>* AVLTree<T>::Balance(AVLNode<T>*& pRoot)
 	int nDiff = GetChildHeightDiff(temp);
 	
 	// no changs
-	if(abs(nDiff) == 1)
+	if(abs(nDiff) == 1 || abs(nDiff) == 0)
 		return pRoot;
 
 	// left subtree has bigger height 
