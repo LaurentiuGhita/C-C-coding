@@ -11,7 +11,11 @@ int main()
 	avlTree.AddNode(3);
 	avlTree.AddNode(7);
 	avlTree.AddNode(6);
+	avlTree.PrintInOrder();
 
+
+
+#if 0
 	AVLNode<int>* pNode = avlTree.GetNode(1);
 	std::cout << "Value of node = " << pNode->m_data << " and height = " << avlTree.GetHeight(pNode) << "\n";
 
@@ -26,7 +30,7 @@ int main()
 
 	pNode = avlTree.GetNode(6);
 	std::cout << "Value of node = " << pNode->m_data << " and height = " << avlTree.GetHeight(pNode) << "\n";
-	
+#endif
 
 	//avlTree.LeftRightRotation(pNode);
 
@@ -35,5 +39,5 @@ int main()
 	//std::cout << "Value of node = " << pNode->m_data << " and height = " << avlTree.GetHeight(pNode) << "\n";
 
 	//std::cout << "Children height diff for node " << pNode->m_data << " is " << avlTree.GetChildHeightDiff(pNode) << "\n";
-
+	return 0;
 }

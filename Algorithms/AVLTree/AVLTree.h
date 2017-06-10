@@ -7,10 +7,15 @@
 template <typename T>
 struct AVLNode
 {
-	AVLNode(T val) : m_data(val), pLeft(nullptr), pRight(nullptr){}
+	AVLNode(T val) : m_data(val), m_nHeight(1), pLeft(nullptr), pRight(nullptr), pParent(nullptr){}
 	T m_data;
+	int m_nHeight;
 	struct AVLNode* pLeft;
 	struct AVLNode* pRight;
+	struct AVLNode* pParent;
+
+	int Height() { return m_nHeight; } const
+	void SetHeight(int nHeight) { m_nHeight = nHeight; }
 };
 
 template <typename T>
@@ -21,21 +26,25 @@ public:
 	void PrintInOrder();
 	void AddNode(T val);
 
-	int GetHeight(const AVLNode<T>* pRoot);
-	AVLNode<T>* GetNode(T val);
-	int GetChildHeightDiff(const AVLNode<T>*& pRoot);
+	int GetHeight(AVLNode<T>& root);
+	AVLNode<T>& GetNode(T val);
+	int GetChildHeightDiff(AVLNode<T>& root);
 
 	AVLNode<T>* LeftLeftRotation(AVLNode<T>*& pRoot);
 	AVLNode<T>* RightRightRotation(AVLNode<T>*& pRoot);
 	AVLNode<T>* RightLeftRotation(AVLNode<T>*& pRoot);
 	AVLNode<T>* LeftRightRotation(AVLNode<T>*& pRoot);
+	
+
 	AVLNode<T>* Balance(AVLNode<T>*& pRoot);
+	int	AdjustHeight(AVLNode<T>& pRoot);
+	int RecomputeHeight(AVLNode<T>& pRoot);
 
 private:
-	void PrintInOrderHelper(const AVLNode<T>* pRoot);
-	void AddNodeHelper(T val, AVLNode<T>*& pRoot);
+	void PrintInOrderHelper(const AVLNode<T>& pRoot);
+	AVLNode<T>* AddNodeHelper(T val, AVLNode<T>*& pRoot);
 
-	AVLNode<T>* GetNodeHelper(T val, AVLNode<T>*& pRoot);
+	AVLNode<T>& GetNodeHelper(T val, AVLNode<T>& root);
 
 	
 	
@@ -46,7 +55,7 @@ private:
 template <typename T>
 void AVLTree<T>::PrintInOrder()
 {
-	PrintInOrderHelper(m_pRoot);
+	PrintInOrderHelper(*m_pRoot);
 }
 
 template <typename T>
@@ -61,113 +70,114 @@ void AVLTree<T>::AddNode(T val)
 }
 
 template <typename T>
-int AVLTree<T>::GetHeight(const AVLNode<T>* pRoot)
+int AVLTree<T>::GetHeight(AVLNode<T>& root)
 {
-	if(pRoot == nullptr)
-		return 0;
-
-	int nLeftHeight = GetHeight(pRoot->pLeft);
-	int nRightHeight = GetHeight(pRoot->pRight);
-
-	int maxHeight = nLeftHeight < nRightHeight ? nRightHeight : nLeftHeight;
-
-	return maxHeight + 1;
+	return root.Height();
 }
 
 template <typename T>
-AVLNode<T>* AVLTree<T>::GetNode(T val)
+AVLNode<T>& AVLTree<T>::GetNode(T val)
 {
-	return GetNodeHelper(val, m_pRoot);
+	return GetNodeHelper(val, *m_pRoot);
 }
 
 template <typename T>
-int AVLTree<T>::GetChildHeightDiff(const AVLNode<T>*& pRoot)
+int AVLTree<T>::GetChildHeightDiff(AVLNode<T>& root)
 {
-	if(pRoot == nullptr)
-		return 0;
-
-	int nLeftHeight = GetHeight(pRoot->pLeft);
-	int nRightHeight = GetHeight(pRoot->pRight);
+	int nLeftHeight = 0;
+	int nRightHeight = 0;
+	
+	if(root.pLeft)
+		nLeftHeight = GetHeight(*root.pLeft);
+	if(root.pRight) 
+		nRightHeight = GetHeight(*root.pRight);
 
 	return nLeftHeight - nRightHeight;
-
 }
 
 template <typename T>
-void AVLTree<T>::PrintInOrderHelper(const AVLNode<T>* pRoot)
+void AVLTree<T>::PrintInOrderHelper(const AVLNode<T>& root)
 {
-	if(pRoot != NULL)
+	std::cout << root.m_data << " weight " << root.m_nHeight << " ";
+	if(root.pParent)
+		std::cout << " with parent " << root.pParent->m_data;
+	
+	if(root.pLeft)
+		std::cout << " with left child " << root.pLeft->m_data;
+
+	if(root.pRight)
+		std::cout << " and right child " << root.pRight->m_data;
+
+	std::cout << "\n";
+
+	if(root.pLeft)
 	{
-		std::cout << pRoot->m_data << "\n";
-		PrintInOrderHelper(pRoot->pLeft);
-		PrintInOrderHelper(pRoot->pRight);
+		PrintInOrderHelper(*root.pLeft);
 	}
+	
+	if(root.pRight)
+		PrintInOrderHelper(*root.pRight);
 }
 
 template <typename T>
-void AVLTree<T>::AddNodeHelper(T val, AVLNode<T>*& pRoot)
+AVLNode<T>* AVLTree<T>::AddNodeHelper(T val, AVLNode<T>*& pRoot)
 {
 	if(pRoot == nullptr)
-		return;
+		return new AVLNode<T>(val);
 
 	// add as left child
 	if(val > pRoot->m_data)
 	{
-		if(pRoot->pRight == nullptr)
-		{
-			pRoot->pRight = new AVLNode<T>(val);
-			
-		}
-		else
-		{
-			AddNodeHelper(val, pRoot->pRight);
-			pRoot = Balance(pRoot);
-		}
+		pRoot->pRight = AddNodeHelper(val, pRoot->pRight);
+		pRoot->pRight->pParent = pRoot;
 	}
 	else if(val < pRoot->m_data)
 	{
-		if(pRoot->pLeft == nullptr)
-		{
-			pRoot->pLeft = new AVLNode<T>(val);
-		}
-		else
-		{
-			AddNodeHelper(val, pRoot->pLeft);
-			pRoot = Balance(pRoot);
-		}
+		pRoot->pLeft = AddNodeHelper(val, pRoot->pLeft);
+		pRoot->pLeft->pParent = pRoot;
 	}
+
+
+	AdjustHeight(*pRoot);
+	Balance(pRoot);
+	return pRoot;
+//	
 }
 
 template <typename T>
-AVLNode<T>* AVLTree<T>::GetNodeHelper(T val, AVLNode<T>*& pRoot)
+AVLNode<T>& AVLTree<T>::GetNodeHelper(T val, AVLNode<T>& root)
 {
-	if(pRoot != nullptr)
-	{
-		if(pRoot->m_data == val)
-			return pRoot;
-		else
-		{
-			if(val > pRoot->m_data)
-				return GetNodeHelper(val, pRoot->pRight);
-			else
-				return GetNodeHelper(val, pRoot->pLeft);
-		}
-	}
+	if(root.m_data == val)
+		return root;
 	else
-		return nullptr;
+	{
+		if(val > root.m_data)
+			return GetNodeHelper(val, *root.pRight);
+		else
+			return GetNodeHelper(val, *root.pLeft);
+	}
 }
 
 template <typename T>
 AVLNode<T>* AVLTree<T>::LeftLeftRotation(AVLNode<T>*& pRoot)
 {
 	AVLNode<T>* newRoot = pRoot->pRight;
+	newRoot->pParent = pRoot->pParent;
+
+
 	pRoot->pRight = newRoot->pLeft;
+	if(newRoot->pLeft)
+		newRoot->pLeft->pParent = pRoot;
+
 	newRoot->pLeft = pRoot;
+	pRoot->pParent = newRoot;
 
 	if(pRoot == m_pRoot)
 		m_pRoot = newRoot;
 	else
 		pRoot = newRoot;
+
+	RecomputeHeight(*newRoot);
 
 	return newRoot;
 }
@@ -184,6 +194,7 @@ AVLNode<T>* AVLTree<T>::RightRightRotation(AVLNode<T>*& pRoot)
 	else
 		pRoot = newRoot;
 
+	RecomputeHeight(*newRoot);
 	return newRoot;
 }
 
@@ -237,20 +248,19 @@ AVLNode<T>* AVLTree<T>::Balance(AVLNode<T>*& pRoot)
 	if(pRoot == m_pRoot)
 		bChangeRoot = true;
 
-	const AVLNode<T>* temp = pRoot;
+	AVLNode<T>& temp = *pRoot;
 
 	int nDiff = GetChildHeightDiff(temp);
 	
 	// no changs
-	if(abs(nDiff) == 1)
+	if(abs(nDiff) == 1 || abs(nDiff) == 0)
 		return pRoot;
 
 	// left subtree has bigger height 
 	if(nDiff > 1)
 	{
 		std::cout << "balancing root node with val" << pRoot->m_data << "\n";
-		temp = pRoot->pLeft;
-		if(GetChildHeightDiff(temp) > 0)
+		if(GetChildHeightDiff(*(pRoot->pLeft)) > 0)
 		{
 			// simple left left
 			pRoot = RightRightRotation(pRoot);
@@ -263,8 +273,7 @@ AVLNode<T>* AVLTree<T>::Balance(AVLNode<T>*& pRoot)
 	}
 	else
 	{	
-		temp = pRoot->pRight;
-		if(GetChildHeightDiff(temp) < 0)
+		if(GetChildHeightDiff(*(pRoot->pRight)) < 0)
 		{
 			// simple right right
 			pRoot = LeftLeftRotation(pRoot);
@@ -278,5 +287,46 @@ AVLNode<T>* AVLTree<T>::Balance(AVLNode<T>*& pRoot)
 
 	return pRoot;
 }
+
+template <typename T>
+int	AVLTree<T>::AdjustHeight(AVLNode<T>& root)
+{
+	int nLeft = 0;
+	int nRight = 0;
+
+	if(root.pLeft)
+		nLeft = GetHeight(*root.pLeft);
+	
+	if(root.pRight)
+		nRight = GetHeight(*root.pRight);
+
+	int max = std::max(nLeft, nRight);
+
+	root.SetHeight(max + 1);
+	return max + 1;
+}
+
+template <typename T>
+int AVLTree<T>::RecomputeHeight(AVLNode<T>& root)
+{
+	if(nullptr == root.pRight && nullptr == root.pLeft)
+	{
+		root.SetHeight(1);
+		return 1;
+	}
+
+	int nLeftHeight = 0;
+	if(root.pLeft)
+		nLeftHeight = RecomputeHeight(*root.pLeft);
+
+	int nRightHeight = 0;
+	if(root.pRight)
+		nRightHeight = RecomputeHeight(*root.pRight);
+
+	int max = std::max(nLeftHeight, nRightHeight);
+	root.SetHeight(max + 1);
+
+}
+
 
 #endif
