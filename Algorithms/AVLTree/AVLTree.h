@@ -14,9 +14,29 @@ struct AVLNode
 	struct AVLNode* pRight;
 	struct AVLNode* pParent;
 
+	//AVLNode<T> operator=(const AVLNode<T>& src );
+
+
 	int Height() { return m_nHeight; } const
 	void SetHeight(int nHeight) { m_nHeight = nHeight; }
 };
+
+#if 0
+template <typename T>
+AVLNode<T> AVLNode<T>::operator=(const AVLNode<T>& src ) 
+{ 
+	if (this == &src)
+		return;
+
+	pLeft = src.pLeft;
+	pRight = src.pRight;
+	pParent = src.pParent;
+	m_data = src.m_data;
+	m_nHeight = src.m_nHeight;
+
+	return *this;
+}
+#endif
 
 template <typename T>
 class AVLTree
@@ -25,9 +45,10 @@ public:
 	AVLTree() : m_pRoot(nullptr){}
 	void PrintInOrder();
 	void AddNode(T val);
+	void RemoveNode(T val);
 
 	int GetHeight(AVLNode<T>& root);
-	AVLNode<T>& GetNode(T val);
+	AVLNode<T>* GetNode(T val);
 	int GetChildHeightDiff(AVLNode<T>& root);
 
 	AVLNode<T>* LeftLeftRotation(AVLNode<T>*& pRoot);
@@ -39,14 +60,15 @@ public:
 	AVLNode<T>* Balance(AVLNode<T>*& pRoot);
 	int	AdjustHeight(AVLNode<T>& pRoot);
 	int RecomputeHeight(AVLNode<T>& pRoot);
+	void RecomputeHeightUpward(AVLNode<T>& root);
 
+	AVLNode<T>* GetPredecessor(const AVLNode<T>& root); // to make private
 private:
 	void PrintInOrderHelper(const AVLNode<T>& pRoot);
 	AVLNode<T>* AddNodeHelper(T val, AVLNode<T>*& pRoot);
+	AVLNode<T>* RemoveNodeHelper(T val, AVLNode<T>*& pRoot);
 
-	AVLNode<T>& GetNodeHelper(T val, AVLNode<T>& root);
-
-	
+	AVLNode<T>* GetNodeHelper(T val, AVLNode<T>& root);
 	
 
 	AVLNode<T>* m_pRoot;
@@ -70,13 +92,92 @@ void AVLTree<T>::AddNode(T val)
 }
 
 template <typename T>
+void AVLTree<T>::RemoveNode(T val)
+{
+	AVLNode<T>* nodeToDelete = GetNode(val);
+	AVLNode<T>* replacementNode = nullptr;
+	if(nodeToDelete == nullptr)
+	{
+		std::cout << "Node " << val << " not in tree \n";
+
+	}
+	else
+	{
+		AVLNode<T>* pPredecessor = GetPredecessor(*nodeToDelete);
+		AVLNode<T>* pParent = nodeToDelete->pParent;
+
+		if(pPredecessor)
+		{
+			// adjust link from parrent
+			nodeToDelete->m_data = pPredecessor->m_data;
+
+			if(pPredecessor->pParent != nodeToDelete)
+			{
+				// it is a right child from left subtree
+				AVLNode<T>* predecessorParent = pPredecessor->pParent;
+				AVLNode<T>* predecessorLeftTreeRoot = pPredecessor->pLeft;
+
+				// adjust link for predecessor's parent
+				if(predecessorParent)
+				{
+					predecessorParent->pRight = predecessorLeftTreeRoot;
+					if(predecessorLeftTreeRoot)
+						predecessorLeftTreeRoot->pParent = predecessorParent;
+				
+
+					RecomputeHeightUpward(*predecessorParent); // not sure
+				}
+			}
+			else
+			{	
+				// first left child
+				AVLNode<T>* bkp = nodeToDelete;
+
+				if(pPredecessor->pLeft)
+					pPredecessor->pLeft->pParent = nodeToDelete;
+
+				nodeToDelete->pLeft = pPredecessor->pLeft;
+
+				RecomputeHeightUpward(*nodeToDelete);
+			}
+				
+			delete pPredecessor;
+		}
+		else
+		{
+			// right child replaces node to delete
+			AVLNode<T>* pRightChild = nodeToDelete->pRight;
+			replacementNode = pRightChild;
+
+			// link parent 
+			if(pParent)
+			{
+				if(val < pParent->m_data)
+				{
+					// node to delete is left child
+					pParent->pLeft = pRightChild;
+				}
+				else
+					pParent->pRight = pRightChild;
+			}
+			replacementNode->pParent = nodeToDelete->pParent;
+
+			RecomputeHeightUpward(*pParent);
+		}
+
+		//Balance(pParent->pParent);
+	}
+}
+
+
+template <typename T>
 int AVLTree<T>::GetHeight(AVLNode<T>& root)
 {
 	return root.Height();
 }
 
 template <typename T>
-AVLNode<T>& AVLTree<T>::GetNode(T val)
+AVLNode<T>* AVLTree<T>::GetNode(T val)
 {
 	return GetNodeHelper(val, *m_pRoot);
 }
@@ -98,7 +199,8 @@ int AVLTree<T>::GetChildHeightDiff(AVLNode<T>& root)
 template <typename T>
 void AVLTree<T>::PrintInOrderHelper(const AVLNode<T>& root)
 {
-	std::cout << root.m_data << " weight " << root.m_nHeight << " ";
+	std::cout << root.m_data;
+	std::cout  << " weight " << root.m_nHeight << " ";
 	if(root.pParent)
 		std::cout << " with parent " << root.pParent->m_data;
 	
@@ -145,17 +247,43 @@ AVLNode<T>* AVLTree<T>::AddNodeHelper(T val, AVLNode<T>*& pRoot)
 }
 
 template <typename T>
-AVLNode<T>& AVLTree<T>::GetNodeHelper(T val, AVLNode<T>& root)
+AVLNode<T>* AVLTree<T>::GetNodeHelper(T val, AVLNode<T>& root)
 {
 	if(root.m_data == val)
-		return root;
+		return &root;
 	else
 	{
 		if(val > root.m_data)
-			return GetNodeHelper(val, *root.pRight);
+		{
+			if(root.pRight)
+				return GetNodeHelper(val, *root.pRight);
+
+		}
 		else
-			return GetNodeHelper(val, *root.pLeft);
+		{
+			if(root.pLeft)
+				return GetNodeHelper(val, *root.pLeft);
+		}
+		return nullptr;
 	}
+}
+
+template <typename T>
+AVLNode<T>* AVLTree<T>::GetPredecessor(const AVLNode<T>& root)
+{
+	if(root.pLeft == nullptr)
+		return nullptr;
+
+	//return max from left subtree --> go right as much as pussible
+
+	AVLNode<T>* predecessor = root.pLeft;
+
+	while(predecessor->pRight != nullptr)
+	{
+		predecessor = predecessor->pRight;
+	}
+
+	return predecessor;
 }
 
 template <typename T>
@@ -186,8 +314,14 @@ template <typename T>
 AVLNode<T>* AVLTree<T>::RightRightRotation(AVLNode<T>*& pRoot)
 {
 	AVLNode<T>* newRoot = pRoot->pLeft;
+	newRoot->pParent = pRoot->pParent;
+
 	pRoot->pLeft = newRoot->pRight;
+	if(newRoot->pRight)
+		newRoot->pRight->pParent = pRoot;
+
 	newRoot->pRight = pRoot;
+	pRoot->pParent = newRoot;
 
 	if(pRoot == m_pRoot)
 		m_pRoot = newRoot;
@@ -319,14 +453,37 @@ int AVLTree<T>::RecomputeHeight(AVLNode<T>& root)
 	if(root.pLeft)
 		nLeftHeight = RecomputeHeight(*root.pLeft);
 
+
+
 	int nRightHeight = 0;
 	if(root.pRight)
 		nRightHeight = RecomputeHeight(*root.pRight);
 
 	int max = std::max(nLeftHeight, nRightHeight);
-	root.SetHeight(max + 1);
 
+	int currentHeight = root.Height();
+
+	if(currentHeight != max + 1)
+		root.SetHeight(max + 1);
+
+	return max + 1;
 }
 
+template <typename T>
+void AVLTree<T>::RecomputeHeightUpward(AVLNode<T>& root)
+{
+	AVLNode<T>* node = &root;
+	while(node != nullptr)
+	{
+		int nCurrentHeight = node->Height();
+		int nRet = RecomputeHeight(*node);
+		if(nCurrentHeight == nRet)
+		{
+			//std::cout << "Stopping at node with val " << node->m_data << "\n";
+			break;
+		}
+		node = node->pParent;
+	}
+}
 
 #endif

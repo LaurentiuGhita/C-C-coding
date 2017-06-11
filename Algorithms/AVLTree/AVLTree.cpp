@@ -6,14 +6,26 @@
 int main()
 {
 	AVLTree<int> avlTree;
+
 	avlTree.AddNode(1);
 	avlTree.AddNode(2);
 	avlTree.AddNode(3);
 	avlTree.AddNode(7);
 	avlTree.AddNode(6);
+	avlTree.RemoveNode(6);
+#if 0
+	avlTree.AddNode(100);
+	avlTree.AddNode(15);
+	avlTree.AddNode(7);
+	avlTree.AddNode(6);
+	avlTree.AddNode(10);
+	avlTree.AddNode(9);
+	avlTree.AddNode(13);
+	avlTree.AddNode(12);
+
+	avlTree.RemoveNode(15);
+#endif
 	avlTree.PrintInOrder();
-
-
 
 #if 0
 	AVLNode<int>* pNode = avlTree.GetNode(1);
