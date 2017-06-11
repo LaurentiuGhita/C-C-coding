@@ -165,7 +165,13 @@ void AVLTree<T>::RemoveNode(T val)
 			RecomputeHeightUpward(*pParent);
 		}
 
-		Balance(pParent);
+		// rebalance up to the root
+		AVLNode<T>* node = pParent;
+		while(node != null)
+		{
+			Balance(node);
+			node = node->pParent;
+		}
 	}
 }
 
