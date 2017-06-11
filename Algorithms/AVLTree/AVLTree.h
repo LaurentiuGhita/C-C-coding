@@ -77,7 +77,8 @@ private:
 template <typename T>
 void AVLTree<T>::PrintInOrder()
 {
-	PrintInOrderHelper(*m_pRoot);
+	if(m_pRoot)
+		PrintInOrderHelper(*m_pRoot);
 }
 
 template <typename T>
@@ -167,7 +168,7 @@ void AVLTree<T>::RemoveNode(T val)
 
 		// rebalance up to the root
 		AVLNode<T>* node = pParent;
-		while(node != null)
+		while(node != nullptr)
 		{
 			Balance(node);
 			node = node->pParent;
@@ -400,7 +401,7 @@ AVLNode<T>* AVLTree<T>::Balance(AVLNode<T>*& pRoot)
 	if(nDiff > 1)
 	{
 		std::cout << "balancing root node with val" << pRoot->m_data << "\n";
-		if(GetChildHeightDiff(*(pRoot->pLeft)) > 0)
+		if(GetChildHeightDiff(*(pRoot->pLeft)) >= 0)
 		{
 			// simple left left
 			pRoot = RightRightRotation(pRoot);
@@ -413,7 +414,7 @@ AVLNode<T>* AVLTree<T>::Balance(AVLNode<T>*& pRoot)
 	}
 	else
 	{	
-		if(GetChildHeightDiff(*(pRoot->pRight)) < 0)
+		if(GetChildHeightDiff(*(pRoot->pRight)) <= 0)
 		{
 			// simple right right
 			pRoot = LeftLeftRotation(pRoot);
