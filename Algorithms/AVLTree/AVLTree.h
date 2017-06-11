@@ -147,7 +147,6 @@ void AVLTree<T>::RemoveNode(T val)
 		{
 			// right child replaces node to delete
 			AVLNode<T>* pRightChild = nodeToDelete->pRight;
-			replacementNode = pRightChild;
 
 			// link parent 
 			if(pParent)
@@ -160,12 +159,13 @@ void AVLTree<T>::RemoveNode(T val)
 				else
 					pParent->pRight = pRightChild;
 			}
-			replacementNode->pParent = nodeToDelete->pParent;
+			if(pRightChild)
+				pRightChild->pParent = nodeToDelete->pParent;
 
 			RecomputeHeightUpward(*pParent);
 		}
 
-		//Balance(pParent->pParent);
+		Balance(pParent);
 	}
 }
 

@@ -12,7 +12,7 @@ int main()
 	avlTree.AddNode(3);
 	avlTree.AddNode(7);
 	avlTree.AddNode(6);
-	avlTree.RemoveNode(6);
+	avlTree.RemoveNode(1);
 #if 0
 	avlTree.AddNode(100);
 	avlTree.AddNode(15);
