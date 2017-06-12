@@ -11,9 +11,36 @@ int max(int a, int b)
 	return a;
 }
 
+
+Node* Insert2(Node** pRoot, int nVal)
+{
+	if(pRoot == NULL)
+		return NULL;
+
+	if(*pRoot == NULL)
+	{
+		*pRoot = malloc(sizeof(Node));
+		(*pRoot)->m_nVal = nVal;
+		(*pRoot)->m_pRightChild = NULL;
+		(*pRoot)->m_pLeftChild = NULL;
+		(*pRoot)->m_pParent = NULL;
+		return *pRoot;
+	}
+	else
+	{
+		if(nVal <= (*pRoot)->m_nVal)
+			(*pRoot)->m_pLeftChild = Insert2(&(*pRoot)->m_pLeftChild, nVal);
+		else
+			(*pRoot)->m_pRightChild = Insert2(&(*pRoot)->m_pRightChild, nVal);
+	}
+
+	return *pRoot;
+}
+
 void Insert(Node** pRoot, int nVal)
 {
-
+	if(pRoot == NULL)
+		return;
 	if(*pRoot == NULL)
 	{
 		*pRoot = malloc(sizeof(Node));
@@ -284,13 +311,15 @@ int main()
 {
 	Node *pRoot = NULL;
 
-	Insert(&pRoot, 7);
-	Insert(&pRoot, 10);
-	Insert(&pRoot, 8);
-	Insert(&pRoot, 11);
-	Insert(&pRoot, 5);
-	Insert(&pRoot, 6);
-	Insert(&pRoot, 3);
+	Insert2(&pRoot, 7);
+	Insert2(&pRoot, 10);
+	Insert2(&pRoot, 8);
+	Insert2(&pRoot, 11);
+	Insert2(&pRoot, 5);
+	Insert2(&pRoot, 6);
+	Insert2(&pRoot, 3);
+
+	TraverseInOrder(pRoot);
 
 	Node* pTree = NULL;
 	Insert(&pTree, 10);
