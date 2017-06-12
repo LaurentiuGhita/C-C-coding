@@ -21,29 +21,12 @@ struct AVLNode
 	void SetHeight(int nHeight) { m_nHeight = nHeight; }
 };
 
-#if 0
-template <typename T>
-AVLNode<T> AVLNode<T>::operator=(const AVLNode<T>& src ) 
-{ 
-	if (this == &src)
-		return;
-
-	pLeft = src.pLeft;
-	pRight = src.pRight;
-	pParent = src.pParent;
-	m_data = src.m_data;
-	m_nHeight = src.m_nHeight;
-
-	return *this;
-}
-#endif
-
 template <typename T>
 class AVLTree
 {
 public:
 	AVLTree() : m_pRoot(nullptr){}
-	void PrintInOrder();
+	void PrintPreOrder();
 	void AddNode(T val);
 	void RemoveNode(T val);
 
@@ -64,7 +47,7 @@ public:
 
 	AVLNode<T>* GetPredecessor(const AVLNode<T>& root); // to make private
 private:
-	void PrintInOrderHelper(const AVLNode<T>& pRoot);
+	void PrintPreOrderHelper(const AVLNode<T>& pRoot);
 	AVLNode<T>* AddNodeHelper(T val, AVLNode<T>*& pRoot);
 	AVLNode<T>* RemoveNodeHelper(T val, AVLNode<T>*& pRoot);
 
@@ -75,10 +58,10 @@ private:
 };
 
 template <typename T>
-void AVLTree<T>::PrintInOrder()
+void AVLTree<T>::PrintPreOrder()
 {
 	if(m_pRoot)
-		PrintInOrderHelper(*m_pRoot);
+		PrintPreOrderHelper(*m_pRoot);
 }
 
 template <typename T>
@@ -204,7 +187,7 @@ int AVLTree<T>::GetChildHeightDiff(AVLNode<T>& root)
 }
 
 template <typename T>
-void AVLTree<T>::PrintInOrderHelper(const AVLNode<T>& root)
+void AVLTree<T>::PrintPreOrderHelper(const AVLNode<T>& root)
 {
 	std::cout << root.m_data;
 	std::cout  << " weight " << root.m_nHeight << " ";
@@ -221,11 +204,11 @@ void AVLTree<T>::PrintInOrderHelper(const AVLNode<T>& root)
 
 	if(root.pLeft)
 	{
-		PrintInOrderHelper(*root.pLeft);
+		PrintPreOrderHelper(*root.pLeft);
 	}
 	
 	if(root.pRight)
-		PrintInOrderHelper(*root.pRight);
+		PrintPreOrderHelper(*root.pRight);
 }
 
 template <typename T>

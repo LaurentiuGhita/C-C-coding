@@ -31,7 +31,7 @@ int main()
 		}
 		else if(part1 == "print" || part1 == "p")
 		{
-			avlTree.PrintInOrder();
+			avlTree.PrintPreOrder();
 		}
 		else if(part1 == "q" || part1 == "quit")
 		{
