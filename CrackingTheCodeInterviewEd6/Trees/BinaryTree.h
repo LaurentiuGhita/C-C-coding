@@ -1,16 +1,18 @@
-#include <stdio.h>
+#include <iostream>
 #include <stdlib.h>
-#include <stdbool.h>
+#include <stdio.h>
+#include <queue>
 
 const int NOT_SET = -1000;
 
 struct Node 
 {
+	Node() : m_nVal(-999), m_pParent(NULL), m_pLeftChild(NULL), m_pRightChild(NULL) {}
 	int m_nVal;
 	struct Node* m_pParent;
 	struct Node* m_pLeftChild;
 	struct Node* m_pRightChild;
-} Node_Default = { -999, NULL, NULL, NULL} ;
+};// Node_Default = { -999, NULL, NULL, NULL} ;
 
 typedef struct Node Node;
 
@@ -27,4 +29,4 @@ int IsLeftChild(Node* pParent, Node* pChild);
 bool Covers(Node* pRoot, Node* pChild);
 Node* FindCommonAncestor(Node* pRoot, Node* p, Node* q);
 bool MatchSubTree(Node* pRoot, Node* pTree);
-
+int GetMinimumHeight(Node* pRoot, int& min);

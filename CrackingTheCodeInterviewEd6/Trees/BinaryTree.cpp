@@ -19,11 +19,8 @@ Node* Insert2(Node** pRoot, int nVal)
 
 	if(*pRoot == NULL)
 	{
-		*pRoot = malloc(sizeof(Node));
+		*pRoot = new Node();
 		(*pRoot)->m_nVal = nVal;
-		(*pRoot)->m_pRightChild = NULL;
-		(*pRoot)->m_pLeftChild = NULL;
-		(*pRoot)->m_pParent = NULL;
 		return *pRoot;
 	}
 	else
@@ -43,11 +40,9 @@ void Insert(Node** pRoot, int nVal)
 		return;
 	if(*pRoot == NULL)
 	{
-		*pRoot = malloc(sizeof(Node));
+		*pRoot = new Node();
 		(*pRoot)->m_nVal = nVal;
-		(*pRoot)->m_pRightChild = NULL;
-		(*pRoot)->m_pLeftChild = NULL;
-		(*pRoot)->m_pParent = NULL;
+
 	}
 	else
 	{
@@ -55,10 +50,9 @@ void Insert(Node** pRoot, int nVal)
 		{
 			if((*pRoot)->m_pLeftChild == NULL)
 			{
-				Node* pnew = malloc(sizeof(Node));
+				Node* pnew = new Node();
 				pnew->m_nVal = nVal;
-				pnew->m_pRightChild = NULL;
-				pnew->m_pLeftChild = NULL;
+
 				pnew->m_pParent = *pRoot;
 				(*pRoot)->m_pLeftChild = pnew;	
 			}
@@ -70,10 +64,9 @@ void Insert(Node** pRoot, int nVal)
 		{
 			if((*pRoot)->m_pRightChild == NULL)
 			{
-				Node* pnew = malloc(sizeof(Node));
+				Node* pnew =  new Node();
 				pnew->m_nVal = nVal;
-				pnew->m_pRightChild = NULL;
-				pnew->m_pLeftChild = NULL;
+
 				pnew->m_pParent = *pRoot;
 				(*pRoot)->m_pRightChild = pnew;
 			}
@@ -307,6 +300,11 @@ bool IsSubTree(Node* pRoot, Node* pTree)
 	return MatchSubTree(pRoot->m_pLeftChild, pTree) || MatchSubTree(pRoot->m_pRightChild, pTree);
 }
 
+int GetMinimumHeight(Node* pRoot, int& min)
+{
+	return 0;
+}
+
 int main()
 {
 	Node *pRoot = NULL;
@@ -349,6 +347,6 @@ int main()
 
 	GetSuccessor(pRoot->m_pLeftChild->m_pRightChild);
 #endif 
-
-
 }
+
+
