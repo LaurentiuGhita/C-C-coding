@@ -1,5 +1,6 @@
 #include "Graph.h"
 #include <queue>
+#include <sstream>
 #include <stack>
 
 Graph::Graph()
@@ -55,14 +56,24 @@ void Graph::ReadGraph(std::istream& in)
 	in >> m_bWeights;
 	in >> m_nVertices;
 
+	in.clear();
 	int x, y;
-	while(in >> x >> y)
+	std::string sLine;
+	while(std::getline(in, sLine))
 	{
-		int weight = 0;
-		if(m_bWeights)
-			in >> weight;
+		if(!sLine.empty())
+		{
+			std::stringstream ss;
+			ss << sLine;
+			ss >> x >> y;
+			
+			int weight = 0;
+			if(m_bWeights)
+				in >> weight;
 
-		InsertEdge(x, y, m_bDirected, weight);
+			InsertEdge(x, y, m_bDirected, weight);			
+		}
+
 	}
 }
 
