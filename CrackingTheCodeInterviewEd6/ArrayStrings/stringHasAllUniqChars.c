@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <string.h>
 
+
+// map all 127 ascii characters into 4 intervals 
 int getCharInteger(char c)
 {
     if(c < 123 / 4)
@@ -14,13 +16,12 @@ int getCharInteger(char c)
         return 3;
 }
 
-
 int hasUnique(char* str)
 {
     if(str == NULL)
         return 0;
 
-    /*127 characters 4 integers*/
+    /*127 characters --> 4 integers --> 4 masks */
     int mask[4] = {0};
     int i;
 
@@ -35,7 +36,6 @@ int hasUnique(char* str)
 
         mask[maskIndex] |= aux;
     }
-
     return 1;
 }
 
