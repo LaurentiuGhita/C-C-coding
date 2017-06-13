@@ -42,6 +42,8 @@ public:
 	
 	void DfsTraversal(int nStart);
 
+	bool HasChilds(int x);
+	int GetMinimumDepth(int x);
 	void BfsTraversal(int nStart);
 	void ShortestPath(int x, int y);
 	void ConectedComponents();
@@ -55,6 +57,7 @@ public:
 	void PrimAlgorithm(int nStartIndex); // for minimum spaning tree
 	void DijkstraAlgorithm(int nStartIndex); // shortest path --> mlg n performance using a heap instead of a distance vector
 	void ConstructAllPaths(int nStartNode, int nEndNode);
+
 
 private:
 	int InsertEdge(int x, int y, bool bDirected, int nWeight = 0);

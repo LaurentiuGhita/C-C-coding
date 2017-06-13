@@ -267,6 +267,81 @@ void Graph::DfsTraversal(int x)
 	m_bProcessed[x] = true;
 }
 
+bool Graph::HasChilds(int x)
+{
+	if(m_Edges[x] != NULL)
+		return true;
+
+	return false;
+}
+
+int Graph::GetMinimumDepth(int x)
+{
+
+	struct QData
+	{
+		QData(int index, int depth) : nNodeIndex(index), nDepth(depth) {}
+		int nNodeIndex;
+		int nDepth;
+	};
+
+	// local type queue --> >= c++ 11
+	std::queue<QData> processingQueue;
+	int minDepth = 0;
+	int nCurrentDepth = 0;
+
+	if(m_bDiscovered[x] == false)
+	{
+		m_bDiscovered[x] = true;
+		QData entry(x, nCurrentDepth);
+		processingQueue.push(entry);
+	}
+
+	while(!processingQueue.empty())
+	{
+		QData entry = processingQueue.front();
+		int nNode = entry.nNodeIndex;
+		int nDepth = entry.nDepth;
+
+		if(minDepth < nDepth)
+			minDepth == nDepth;
+
+		if(HasChilds(nNode) == false && nDepth == minDepth)
+		{
+			std::cout << "Found node " << nNode << " with minimum depth " << minDepth << "\n";
+			InitSearch();
+			return minDepth;
+		}
+
+		EdgeNode* child = m_Edges[nNode];
+		while(child != NULL)
+		{
+			int nOtherEnd = child->m_y;
+
+			// add it to queue with depth = currentDepth + 1
+			if(m_bDiscovered[nOtherEnd] == false)
+			{
+				if(HasChilds(nOtherEnd) == false)
+				{
+					std::cout << "Found node " << nOtherEnd << " with minimum depth " << nDepth + 1 << "\n";
+					InitSearch();
+					minDepth = nDepth + 1;
+					return minDepth;
+				}
+				QData newEntry(nOtherEnd,nDepth + 1);
+				processingQueue.push(newEntry);
+			}
+
+			child = child->m_pNext;
+		}
+		processingQueue.pop();
+		m_bProcessed[nNode] = true;
+	}
+
+	return minDepth;
+
+}
+
 void Graph::BfsTraversal(int x)
 {
 	//InitSearch();
