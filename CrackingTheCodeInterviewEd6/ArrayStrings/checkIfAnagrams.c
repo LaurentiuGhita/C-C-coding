@@ -11,12 +11,14 @@ int checkIfAnagram(char* str1, char* str2)
 
 
 	int i;
+	// vector of unique character count
 	for(i = 0; i < strlen(str1); ++i)
 	{
-		charCount[str1[i]]++;
-		charCount[str2[i]]--;
+		charCount[str1[i]]++; // increase count from first string
+		charCount[str2[i]]--; // decrease count from 2nd string
 	}
 
+	// if anagram we should have 0 count for each char
 	for(i = 0; i < 128; ++i)
 		if(charCount[i] != 0)
 			return 0;
