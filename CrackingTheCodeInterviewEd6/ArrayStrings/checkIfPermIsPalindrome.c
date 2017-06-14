@@ -25,11 +25,11 @@ bool checkIfPermIsPalindrome(char* str)
 
     bool foundOdd = false;
     for(i = 0; i < 4; ++i)
-        if(masks[i] != 0 )
+        if(masks[i] != 0 ) // we found a mask that isn't 0 
         {
             if(foundOdd == false)
             {
-                int aux = masks[i] - 1; // now all should be 1
+                int aux = masks[i] - 1; // now all should be 1 to the right of current char 
                 if((aux & masks[i]) == 0)
                 {
                     foundOdd = true;
