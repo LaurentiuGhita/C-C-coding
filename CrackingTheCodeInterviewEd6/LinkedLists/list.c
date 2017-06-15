@@ -96,6 +96,20 @@ int ListLength(Node* pHead)
 	return count;
 }
 
+void PadList(Node** pHead, int num)
+{
+	if(num != 0)
+	{
+		Node* pAux = malloc(sizeof(Node));
+		pAux->m_nVal = 0;
+		pAux->m_pNext = *pHead;
+
+		*pHead = pAux;
+		PadList(pHead, num -1);
+	}
+
+}
+
 void FreeList(Node** pHead)
 {
 	if(pHead && *pHead)
