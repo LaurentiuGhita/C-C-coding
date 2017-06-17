@@ -75,6 +75,46 @@ Node* IsPalindrome(Node* pHead, int nLen, int nBigSize, bool* bStop)
 }
 
 
+bool IsPalindrome2(Node*pHead, int len, Node** pAuxHead)
+{
+	if(len == 1 || len == 2)
+	{
+		if(len == 2)
+		{
+			if(pHead->m_nVal != pHead->m_pNext->m_nVal)
+				return false;
+		}
+
+		if(len == 1)
+			*pAuxHead = pHead->m_pNext; // middle element
+		else
+			*pAuxHead = pHead->m_pNext->m_pNext;
+		return true;
+	}
+	else
+	{
+		bool bRet = IsPalindrome2(pHead->m_pNext, len - 2, pAuxHead);
+		if(bRet == false)
+			return false;
+
+		if(*pAuxHead == NULL)
+			return false;
+
+		if(pHead->m_nVal != (*pAuxHead)->m_nVal)
+		{
+			return false;
+		}
+		else
+		{
+			*pAuxHead = (*pAuxHead)->m_pNext;
+		}
+
+		return bRet;
+	}
+
+}
+
+
 int main()
 {
 	Node* pList = NULL;
@@ -84,6 +124,10 @@ int main()
 	printf("Lenth = %d\n",nLength);
 
 
-	bool bStop = false;
-	IsPalindrome(pList, nLength, nLength, &bStop);
+//	bool bStop = false;
+//	IsPalindrome(pList, nLength, nLength, &bStop);
+
+	Node* pAux;
+	bool bResult = IsPalindrome2(pList, nLength, &pAux);
+	printf("bResult = %d\n", bResult);
 }
