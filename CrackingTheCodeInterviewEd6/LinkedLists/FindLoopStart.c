@@ -30,7 +30,6 @@ Node* FindLoopStart(Node* pHead)
 
 
 	}
-	
 }
 
 
@@ -45,6 +44,7 @@ int main()
 	pTail->m_pNext = pList->m_pNext->m_pNext;
 	printf("%d\n", pTail->m_pNext->m_nVal);
 
-	FindLoopStart(pList);
+	Node* pResult =	FindLoopStart1(pList);
+	printf("Intersection = %d\n", pResult->m_nVal);
 
 }

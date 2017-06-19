@@ -304,7 +304,7 @@ int GetMinimumHeight(Node* pRoot, int& min)
 {
 	return 0;
 }
-
+#if 0
 int main()
 {
 	Node *pRoot = NULL;
@@ -349,4 +349,4 @@ int main()
 #endif 
 }
 
-
+#endif
