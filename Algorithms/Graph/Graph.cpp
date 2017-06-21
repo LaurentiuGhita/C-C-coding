@@ -159,10 +159,11 @@ void Graph::ProcessDFSVertexLate(int x, int nTime)
 	std::cout << "Node " << x << " finished at time " << nTime << "\n";
 
 	bool bRoot;
-	int time_x; // earliest reachable time for x
-	int time_parent; // earliest reachable time for parent[x]
+	int time_x; // discovery time of reachable ancestor 
+	int time_parent; // discovery time of reachable ancestor for x's parent
 
 	m_topologicalSort.push(x);
+
 	// root with more childs
 	if(m_nParent[x] < 1)
 	{
@@ -187,6 +188,7 @@ void Graph::ProcessDFSVertexLate(int x, int nTime)
 	time_x = m_nDiscoveryTime[m_nReachableAncestor[x]];
 	time_parent = m_nDiscoveryTime[m_nReachableAncestor[m_nParent[x]]];
 
+	// update reachable ancestor for parent  ( ex a1-> a2 -> a3-> a4 and back edge from a4 -> a1 ==> reachable ancestor of a3 becomes a1)
 	if(time_x < time_parent)
 		m_nReachableAncestor[m_nParent[x]] = m_nReachableAncestor[x];
 }
@@ -199,14 +201,30 @@ void Graph::ProcessDFSEdge(int x, int y)
 	{
 		std::cout << "Found cycle from " << y << " to " << x << "\n";
 		FindPath(y,x);
+
+		if(m_nDiscoveryTime[y] < m_nDiscoveryTime[ m_low[x]])
+			m_low[x] = y;
 	}
+
+	if(type == CROSS)
+	{
+		// component not assigned yet
+		if(m_scc[y] == -1)
+		{
+			if(m_nDiscoveryTime[y] < m_nDiscoveryTime[ m_low[x]])
+				m_low[x] = y;
+		}
+	}
+
 	std::cout << "Processing edge " << x << " " << y << "\n";
 
 	if(type == TREE)
 		m_OutDegree[x]++;
 
+	// only for back edge but not to parent
 	if(type == BACK && m_nParent[x] != y )
 	{
+		// lower discovery time for a back edge --> update reachable ancestor
 		if(m_nDiscoveryTime[y] < m_nDiscoveryTime[m_nReachableAncestor[x]])
 			m_nReachableAncestor[x] = y;
 	}

@@ -28,7 +28,7 @@ Node* CreateMinimalSubTree(std::vector<int> array, int start, int end)
 	if(pRoot->m_pRightChild)
 		pRoot->m_pRightChild->m_pParent = pRoot;
 
-	return pRoot;
+	return pRoot;	
 }
 
 

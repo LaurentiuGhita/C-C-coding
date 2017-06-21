@@ -86,6 +86,9 @@ private:
 	COLOR m_color[MAX_VERTICES + 1];
 	EdgeNode* m_Edges[MAX_VERTICES + 1];
 	std::stack<int> m_topologicalSort;
+
+	int m_low[MAX_VERTICES + 1]; /* oldest vertex that is for sure in the same component with v */
+	int m_scc[MAX_VERTICES + 1]; /* strong component number for each vertex */
 };
 
 #endif
