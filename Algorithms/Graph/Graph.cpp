@@ -27,6 +27,18 @@ void Graph::InitSearch()
 	}
 }
 
+void Graph::InitSCCData()
+{
+	for(int i = 0; i < m_nVertices; ++i)
+	{
+		m_low[i] = i;
+		m_scc[i] = -1;
+	}
+	while(!m_sccStack.empty())
+		m_sccStack.pop();
+	m_nComponents = 0;
+}
+
 void Graph::ResetColor()
 {
 	for(int i = 0; i < m_nVertices; i++)
@@ -152,10 +164,48 @@ void Graph::ProcessDFSVertexEarly(int x, int nTime)
 {
 	std::cout << "Node " << x << " started at time " << nTime << "\n";
 	m_nReachableAncestor[x] = x;
+	m_sccStack.push(x);
+}
+
+void Graph::PopComponent(int x)
+{
+	int t;
+
+	m_nComponents++;
+	m_scc[x] = m_nComponents;
+
+	if(!m_sccStack.empty())
+	{
+		t = m_sccStack.top();
+		m_sccStack.pop();
+	}
+	while( t != x )
+	{
+		m_scc[t] = m_nComponents;
+
+		if(m_sccStack.empty())
+			break;
+		else
+		{
+
+			t = m_sccStack.top();
+			m_sccStack.pop();
+		}
+	}
 }
 
 void Graph::ProcessDFSVertexLate(int x, int nTime)
 {
+
+	if(m_low[x] == x)
+	{
+		PopComponent(x);
+	}
+
+	if(m_nDiscoveryTime[m_low[x]] < m_nDiscoveryTime[m_low[m_nParent[x]]])
+		m_low[m_nParent[x]] = m_low[x];
+
+#if 0
 	std::cout << "Node " << x << " finished at time " << nTime << "\n";
 
 	bool bRoot;
@@ -191,12 +241,27 @@ void Graph::ProcessDFSVertexLate(int x, int nTime)
 	// update reachable ancestor for parent  ( ex a1-> a2 -> a3-> a4 and back edge from a4 -> a1 ==> reachable ancestor of a3 becomes a1)
 	if(time_x < time_parent)
 		m_nReachableAncestor[m_nParent[x]] = m_nReachableAncestor[x];
+#endif
 }
 
 void Graph::ProcessDFSEdge(int x, int y)
 {
 	EdgeType type = GetEdgeType(x,y);
 	/* check for cycles */
+	
+	if(type == BACK)
+	{
+		if(m_nDiscoveryTime[y] < m_nDiscoveryTime[m_low[x]])
+			m_low[x] = y;
+	}
+	if(type == CROSS)
+	{
+		if(m_scc[y] == -1)
+			if(m_nDiscoveryTime[y] < m_nDiscoveryTime[m_low[x]])
+				m_low[x] = y;
+	}
+#if 0 
+good code - commented just to have only scc code
 	if(type == BACK)
 	{
 		std::cout << "Found cycle from " << y << " to " << x << "\n";
@@ -228,6 +293,7 @@ void Graph::ProcessDFSEdge(int x, int y)
 		if(m_nDiscoveryTime[y] < m_nDiscoveryTime[m_nReachableAncestor[x]])
 			m_nReachableAncestor[x] = y;
 	}
+#endif
 }
 
 void Graph::FindPath(int x, int y)
@@ -243,7 +309,7 @@ void Graph::FindPath(int x, int y)
 	}
 }
 
-void Graph::DfsTraversal(int x)
+void Graph::DfsTraversal(int x, FPTRProcessVertexEarly processEarly, FPTRProcessEdge processEdge, FPTRProcessVertexLate processLate)
 {
 	static int nTime = -1;
 	nTime++;
@@ -251,11 +317,11 @@ void Graph::DfsTraversal(int x)
 
 	m_bDiscovered[x] = true;
 	m_nDiscoveryTime[x] = nTime;
-	ProcessDFSVertexEarly(x, nTime);
+	(this->*processEarly)(x);
 	if(aux == NULL)
 	{
 		/* no adjancent edges */
-		ProcessDFSVertexLate(x, nTime);
+		(this->*processLate)(x);
 		m_bProcessed[x] = true;
 		return;
 	}
@@ -268,21 +334,33 @@ void Graph::DfsTraversal(int x)
 		if(m_bDiscovered[y] == false)
 		{
 			m_nParent[y] = x;
-			ProcessDFSEdge(x, y);
-			DfsTraversal(y);
+			(this->*processEdge)(x, y);
+			DfsTraversal(y, processEarly, processEdge, processLate);
 		}
 		else
 		{
 			if(m_bDirected || (m_bDirected == false && GetEdgeType(x,y) == BACK))
-				ProcessDFSEdge(x,y);
+				(this->*processEdge)(x,y);
 		}
 		aux = aux->m_pNext;
 	}
 
 	m_nFinishTime[x] = ++nTime;
-	ProcessDFSVertexLate(x, nTime);
+	(this->*processLate)(x);
 	
 	m_bProcessed[x] = true;
+}
+
+void Graph::GetStrongConnectedComponents()
+{
+	InitSearch();
+	InitSCCData();
+
+	for(int i = 0; i < m_nVertices; ++i)
+	{
+		if(m_bDiscovered[i] == false)
+			DfsTraversal(i, &Graph::ProcessDfsSccEarlyVertex, &Graph::ProcessDfsSccEdge, &Graph::ProcessDfsSccLateVertex);
+	}
 }
 
 bool Graph::HasChilds(int x)
@@ -470,7 +548,8 @@ void Graph::TopologicalSort()
 	{
 		if(m_bDiscovered[i] == false)
 		{
-			DfsTraversal(i);
+			/* TODO */
+			//DfsTraversal(i);
 		}
 	}
 
@@ -670,6 +749,48 @@ void Graph::ConstructAllPaths(int nStartIndex, int nNodeIndex)
 
 	delete []a;
 }
+
+
+void Graph::ProcessDfsSccEarlyVertex(int x)
+{
+	/* just push it on the stack*/
+	m_sccStack.push(x);
+}
+	
+void Graph::ProcessDfsSccEdge(int x, int y)
+{
+	EdgeType type = GetEdgeType(x,y);
+
+	if(type == BACK)
+	{
+		//we found a back edge, if this node is older than the current oldest vertex in scc update it
+		if(m_nDiscoveryTime[y] < m_nDiscoveryTime[ m_low[x]])
+			m_low[x] = y;
+	}
+	if(type == CROSS)
+	{
+		// don't know an example for this
+		if(m_scc[y] == -1)
+		{
+			if(m_nDiscoveryTime[y] < m_nDiscoveryTime[ m_low[x]])
+				m_low[x] = y;
+		}
+	}
+}
+
+void Graph::ProcessDfsSccLateVertex(int x)
+{
+	// we found a scc --> keep poping elements off the stack until we reach x
+	if(m_low[x] == x)
+	{
+		PopComponent(x);
+	}
+
+	// update parents low
+	if(m_nDiscoveryTime[m_low[x]] < m_nDiscoveryTime[ m_low[m_nParent[x]]])
+			m_low[m_nParent[x]] = m_low[x];
+}
+
 
 void Graph::backtrack(int*& a, int k, int n)
 {

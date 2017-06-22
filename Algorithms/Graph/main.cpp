@@ -6,8 +6,8 @@ int main()
 	Graph myGraph;
 	std::ifstream fin("input1");
 	myGraph.ReadGraph(fin);
-	myGraph.GetMinimumDepth(1);
-
+	//myGraph.GetMinimumDepth(1);
+	myGraph.GetStrongConnectedComponents();
 	//myGraph.ConstructAllPaths(1, 7);
 	//myGraph.DijkstraAlgorithm(1);
 	//myGraph.PrimAlgorithm(1);
