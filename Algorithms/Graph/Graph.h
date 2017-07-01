@@ -9,6 +9,19 @@ const int MAX_VERTICES = 1023;
 const int NO_PARENT = -1;
 const int INIFITE = 99999;
 
+
+class Graph;
+
+using FPTRProcessVertexEarly = void(Graph::*)(int x);
+using FPTRProcessEdge = void(Graph::*)(int x, int y);
+using FPTRProcessVertexLate = void(Graph::*)(int x);
+
+#if 0
+using FPTRProcessVertexEarly = std::add_pointer<Graph, void(int x)>::type;
+using FPTRProcessVertexLate = std::add_pointer<Graph,void(int x)>::type;
+using FPTRProcessEdge = std::add_pointer<void(Graph, int x, int y)>::type;
+#endif
+
 enum COLOR
 {
 	UNCOLORED,
@@ -40,7 +53,7 @@ public:
 	void ReadGraph(std::istream& in);
 	void PrintGraph();
 	
-	void DfsTraversal(int nStart);
+	void DfsTraversal(int nStart, FPTRProcessVertexEarly, FPTRProcessEdge, FPTRProcessVertexLate );
 
 	bool HasChilds(int x);
 	int GetMinimumDepth(int x);
@@ -57,7 +70,9 @@ public:
 	void PrimAlgorithm(int nStartIndex); // for minimum spaning tree
 	void DijkstraAlgorithm(int nStartIndex); // shortest path --> mlg n performance using a heap instead of a distance vector
 	void ConstructAllPaths(int nStartNode, int nEndNode);
-
+	void InitSCCData();
+	void GetStrongConnectedComponents();
+	void PopComponent(int x);
 
 private:
 	int InsertEdge(int x, int y, bool bDirected, int nWeight = 0);
@@ -69,7 +84,11 @@ private:
 	void ProcessDFSVertexLate(int x, int nTime);
 	void ProcessDFSEdge(int x, int y);
 	void ConstructCandidate(int*&a, int k, int n, int*& candidates, int& nCandidates);
-	void backtrack(int*& a, int k, int n); 
+	void backtrack(int*& a, int k, int n);
+
+	void ProcessDfsSccEarlyVertex(int x);
+	void ProcessDfsSccEdge(int x, int y);
+	void ProcessDfsSccLateVertex(int x);
 
 	bool m_bProcessed[MAX_VERTICES + 1];
 	bool m_bDiscovered[MAX_VERTICES + 1];
@@ -89,6 +108,8 @@ private:
 
 	int m_low[MAX_VERTICES + 1]; /* oldest vertex that is for sure in the same component with v */
 	int m_scc[MAX_VERTICES + 1]; /* strong component number for each vertex */
+	std::stack<int> m_sccStack;
+	int m_nComponents;
 };
 
 #endif
