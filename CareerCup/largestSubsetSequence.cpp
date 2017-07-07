@@ -1,16 +1,16 @@
 #include <iostream>
-#include <map>
+#include <unordered_map>
 #include <vector>
 
 /*
 end element of the sequence points to beginning element of the sequence 
-and beginning element of the sequence points to the end element.
+and beginning element of the sequence points to the end element. O(N) + O(N) space 
 */
 void subsetSequence(std::vector<int>& array)
 {
 
 	//each element has the minimum lower bound ()
-	std::map<int, int > resSequencesMap;
+	std::unordered_map<int, int > resSequencesMap;
 	int firstIndex = 0;
 	int endIndex = 0;
 
