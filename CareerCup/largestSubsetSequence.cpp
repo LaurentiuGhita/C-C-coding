@@ -30,9 +30,13 @@ void subsetSequence(std::vector<int>& array)
 				end = resSequencesMap[element + 1];
 
 			int aux = resSequencesMap[begining];
+			// update begining to point to end
 			resSequencesMap[begining] = resSequencesMap[end];
+
+			// update end to point to begining
 			resSequencesMap[end] = aux;
 
+			// check if interval larger than pervious one
 			if(end - begining >= endIndex - firstIndex)
 			{
 				endIndex = end;
