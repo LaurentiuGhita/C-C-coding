@@ -47,6 +47,44 @@ import sys
 
 ###
 
+def tupleCompByKey(pair):
+  return pair[0]
+
+def tupleCompByValue(pair):
+  return pair[-1]
+
+def print_words(filename):
+  dictionary = {}
+  f = open(filename, 'rU')
+  for line in f:
+    for word in line.split():
+
+      if word.lower() in dictionary.keys():
+        dictionary[word.lower()] += 1
+      else:
+        dictionary[word.lower()] = 1
+
+  # sort ascending by keys --> alphabeticaly
+  for key, value in sorted(dictionary.items(), key=tupleCompByKey):
+    print key, value
+
+
+def print_top(filename):
+  dictionary = {}
+  f = open(filename, 'rU')
+  for line in f:
+    for word in line.split():
+
+      if word.lower() in dictionary.keys():
+        dictionary[word.lower()] += 1
+      else:
+        dictionary[word.lower()] = 1
+
+  # sort ascending by keys --> alphabeticaly
+  numberOfEntries = 20
+  for key, value in sorted(dictionary.items(), key=tupleCompByValue, reverse=True)[0:numberOfEntries]:
+    print key, value
+
 # This basic command line argument parsing code is provided and
 # calls the print_words() and print_top() functions which you must define.
 def main():
