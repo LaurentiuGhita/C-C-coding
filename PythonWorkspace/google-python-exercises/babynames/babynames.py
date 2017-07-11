@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python -tt
 # Copyright 2010 Google Inc.
 # Licensed under the Apache License, Version 2.0
 # http://www.apache.org/licenses/LICENSE-2.0
@@ -41,8 +41,33 @@ def extract_names(filename):
   ['2006', 'Aaliyah 91', Aaron 57', 'Abagail 895', ' ...]
   """
   # +++your code here+++
-  return
+  f = open(filename, 'rU')
+  text = f.read()
 
+  year_match = re.search(r'Popularity in ([\d]+)\S', text)
+  if not year_match:
+    print "No year found"
+    exit(1)
+
+  year = year_match.group(1)
+
+  matches = re.findall(r'<td>([\d]+)</td><td>([\w]+)</td><td>([\w]+)</td>', text)
+
+  dictionary = {}
+  for triple in matches:
+    (rank, boyName, girlName) = triple
+    if boyName not in dictionary:
+      dictionary[boyName] = rank
+    if girlName not in dictionary:
+      dictionary[girlName] = rank
+
+  sorted_names = sorted(dictionary.keys())
+
+  resultList = [ year ]
+  for name in sorted_names:
+    resultList.append(name + " " + dictionary[name])
+
+  return resultList
 
 def main():
   # This command-line parsing code is provided.
@@ -59,6 +84,21 @@ def main():
   if args[0] == '--summaryfile':
     summary = True
     del args[0]
+
+  
+  for file in args:
+    entries = extract_names(file)
+    summaryFile = file
+    outFile = None
+    if summary:
+      outFile = open(summaryFile + ".summary", "w")
+
+    outputText = '\n'.join(entries)
+    if summary:
+        outFile.write(outputText)
+        outFile.close()
+    else:
+      print outputText
 
   # +++your code here+++
   # For each filename, get the names, then either print the text output

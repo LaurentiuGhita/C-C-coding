@@ -125,7 +125,6 @@ def main():
       outf.write(text + '\n')
       outf.close()
     else:
-      print text
   # LAB(end solution)
 
 if __name__ == '__main__':
